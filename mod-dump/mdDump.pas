@@ -221,7 +221,7 @@ begin
   // write main attributes
   Writeln('Filename: ', plugin.filename);
   WriteList('Description', plugin.description);
-  //Author
+  Writeln('Author: ', plugin.author);
   Writeln('Hash: ', plugin.hash);
   Writeln('File size: ', FormatByteSize(plugin.fileSize));
   WriteList('Masters', plugin.masters);
@@ -333,11 +333,13 @@ var
   i, j: Integer;
   group: TRecordGroup;
   error: TRecordError;
+  sGroup: String;
   sl: TStringList;
 begin
   obj := SO;
   obj.S['filename'] := plugin.filename;
   obj.S['description'] := plugin.description.Text;
+  obj.S['author'] := plugin.author;
   obj.S['hash'] := plugin.hash;
   obj.I['fileSize'] := plugin.fileSize;
   obj.I['numRecords'] := plugin.numRecords;
@@ -360,13 +362,23 @@ begin
   end;
 
   // dump record groups
-  obj.O['records'] := SO;
+  obj.O['plugin_record_groups'] := SA([]);
   for i := 0 to Pred(plugin.groups.Count) do begin
     group := TRecordGroup(plugin.groups[i]);
     childObj := SO;
+    childObj.S['sig'] := string(group.signature);
     childObj.I['numRecords'] := group.numRecords;
     childObj.I['numOverrides'] := group.numOverrides;
-    obj.O['records'].O[string(group.signature)] := childObj;
+    obj.A['plugin_record_groups'].O[i] := childObj;
+  end;
+
+  //Dump Overrides For Each Group
+  obj.O['override_records'] := SA([]);
+  for i := 0 to Pred(plugin.overrides.Count) do begin
+    childObj := SO;
+    childObj.S['formid'] := IntToHex(Integer(plugin.overrides.Objects[i]), 8);
+    childObj.S['sig'] := plugin.overrides[i];
+    obj.A['override_records'].O[i] := childObj;
   end;
 
   // dump errors
