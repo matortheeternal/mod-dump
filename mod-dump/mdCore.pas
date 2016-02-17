@@ -293,6 +293,7 @@ begin
     if (not rec.IsMaster) or rec.IsInjected then begin
       Inc(numOverrides);
       Inc(group.numOverrides);
+      overrides.AddObject(rec.Signature,TObject(rec.LoadOrderFormID));
     end;
   end;
 
