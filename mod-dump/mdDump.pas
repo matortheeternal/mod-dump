@@ -238,6 +238,13 @@ begin
   if plugin.groups.Count = 0 then
     Writeln(' No records');
 
+  //Write overrides
+  Writeln('Overrides');
+  for i := 0 to Pred(plugin.overrides.Count) do begin
+    Writeln(Format('Sig: [%s]  FormID: %s',
+      [plugin.overrides[i], IntToHex(Integer(plugin.overrides.Objects[i]),8)]));
+  end;
+
   // write errors
   Writeln('Errors:');
   for i := 0 to Pred(plugin.errors.Count) do begin
