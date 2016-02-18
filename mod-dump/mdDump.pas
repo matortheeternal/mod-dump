@@ -379,7 +379,7 @@ begin
     obj.A['plugin_record_groups'].O[i] := childObj;
   end;
 
-  //Dump Overrides For Each Group
+  //Dump Overrides
   obj.O['override_records'] := SA([]);
   for i := 0 to Pred(plugin.overrides.Count) do begin
     childObj := SO;
