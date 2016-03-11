@@ -19,7 +19,7 @@ const
 
 var
   TargetFile, TargetGame: string;
-  bIsPlugin, bIsText: boolean;
+  bIsPlugin, bIsText, bDumpGroups: boolean;
 
 { HELPER METHODS }
 
@@ -38,6 +38,19 @@ begin
   // get program path
   PathList.Values['ProgramPath'] := ExtractFilePath(ParamStr(0));
 
+  // get target game param
+  TargetGame := ParamStr(2);
+  if not SetGameParam(TargetGame) then
+    raise Exception.Create(Format('Invalid GameMode "%s"', [TargetGame]));
+  Writeln('Game: ', ProgramStatus.GameMode.longName);
+  Writeln(' ');
+
+  // dump record groups
+  if ParamStr(1) = '-dumpGroups' then begin
+    bDumpGroups := true;
+    exit;
+  end;
+
   // get target file param
   TargetFile := ParamStr(1);
   if not FileExists(TargetFile) then
@@ -52,13 +65,6 @@ begin
     Writeln('Dumping plugins in list: ', ExtractFileName(TargetFile))
   else
     raise Exception.Create('Target file does not match *.esp, *.esm, or *.txt');
-
-  // get target game param
-  TargetGame := ParamStr(2);
-  if not SetGameParam(TargetGame) then
-    raise Exception.Create(Format('Invalid GameMode "%s"', [TargetGame]));
-  Writeln('Game: ', ProgramStatus.GameMode.longName);
-  Writeln(' ');
 end;
 
 { MAIN PROGRAM EXECUTION }
@@ -67,7 +73,9 @@ begin
   try
     Welcome;
     LoadParams;
-    if bIsPlugin then
+    if bDumpGroups then
+      DumpGroups
+    else if bIsPlugin then
       DumpPlugin(TargetFile)
     else if bIsText then
       DumpPluginsList(TargetFile);

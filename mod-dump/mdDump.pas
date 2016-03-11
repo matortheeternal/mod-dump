@@ -14,6 +14,7 @@ uses
   mdConfiguration, mdCore;
 
   function IsPlugin(filename: string): boolean;
+  procedure DumpGroups;
   procedure DumpPlugin(filePath: string);
   procedure DumpPluginsList(filePath: string);
 
@@ -31,6 +32,46 @@ begin
       [settings.dummyPluginPath]));
   Writeln('Creating empty plugin ', path);
   CopyFile(PChar(settings.dummyPluginPath), PChar(path), true);
+end;
+
+procedure DumpGroups;
+var
+  i: Integer;
+  sig: string;
+  RecordDef: PwbRecordDef;
+  slSignatures, slSeeds: TStringList;
+  RecordGroups: TList;
+begin
+  slSignatures := TStringList.Create;
+  slSeeds := TStringList.Create;
+  try
+    slSignatures.Sorted := True;
+    slSignatures.Duplicates := dupIgnore;
+
+    // initialize list contents
+    slSignatures.AddStrings(wbGroupOrder);
+    slSignatures.Sorted := False;
+
+    // get record def names, if available
+    for i := 0 to Pred(slSignatures.Count) do begin
+      sig := AnsiString(slSignatures[i]);
+      if wbFindRecordDef(sig, RecordDef) then begin
+        Writeln(Format('%s - %s', [sig, RecordDef.Name]));
+        slSeeds.Add('RecordGroup.create(');
+        slSeeds.Add('    game_id: game'+wbGameName+'.id,');
+        slSeeds.Add('    signature: '''+sig+''',');
+        slSeeds.Add('    name: '''+RecordDef.Name+''',');
+        slSeeds.Add('    child_group: false');
+        slSeeds.Add(')');
+      end;
+    end;
+
+    // save seeds
+    slSeeds.SaveToFile('seeds'+wbGameName+'.rb');
+  finally
+    slSignatures.Free;
+    slSeeds.Free;
+  end;
 end;
 
 {
