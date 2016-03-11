@@ -68,3 +68,4 @@ mod-dump/Skyrim/plugins/*.esm
 
 # OSX files to ignore
 .DS_STORE
+mod-dump/seeds*
