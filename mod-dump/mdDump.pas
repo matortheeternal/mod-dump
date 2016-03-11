@@ -38,38 +38,31 @@ procedure DumpGroups;
 var
   i: Integer;
   sig: string;
+  RDE: PwbRecordDefEntry;
   RecordDef: PwbRecordDef;
-  slSignatures, slSeeds: TStringList;
-  RecordGroups: TList;
+  slSeeds: TStringList;
+  bChildGroup: Boolean;
 begin
-  slSignatures := TStringList.Create;
   slSeeds := TStringList.Create;
   try
-    slSignatures.Sorted := True;
-    slSignatures.Duplicates := dupIgnore;
-
-    // initialize list contents
-    slSignatures.AddStrings(wbGroupOrder);
-    slSignatures.Sorted := False;
-
     // get record def names, if available
-    for i := 0 to Pred(slSignatures.Count) do begin
-      sig := AnsiString(slSignatures[i]);
-      if wbFindRecordDef(sig, RecordDef) then begin
-        Writeln(Format('%s - %s', [sig, RecordDef.Name]));
-        slSeeds.Add('RecordGroup.create(');
-        slSeeds.Add('    game_id: game'+wbGameName+'.id,');
-        slSeeds.Add('    signature: '''+sig+''',');
-        slSeeds.Add('    name: '''+RecordDef.Name+''',');
-        slSeeds.Add('    child_group: false');
-        slSeeds.Add(')');
-      end;
+    for i := 0 to High(wbRecordDefs) do begin
+      RDE := @wbRecordDefs[i];
+      RecordDef := @RDE.rdeDef;
+      sig := RecordDef.Signatures[0];
+      bChildGroup := wbGroupOrder.IndexOf(sig) = -1;
+      Writeln(Format('%s - %s', [sig, RecordDef.Name]));
+      slSeeds.Add('RecordGroup.create(');
+      slSeeds.Add('    game_id: game'+wbGameName+'.id,');
+      slSeeds.Add('    signature: '''+sig+''',');
+      slSeeds.Add('    name: '''+RecordDef.Name+''',');
+      slSeeds.Add('    child_group: '+Lowercase(BoolToStr(bChildGroup, true)));
+      slSeeds.Add(')');
     end;
 
     // save seeds
-    slSeeds.SaveToFile('seeds'+wbGameName+'.rb');
+    slSeeds.SaveToFile(wbGameName+'\seeds.rb');
   finally
-    slSignatures.Free;
     slSeeds.Free;
   end;
 end;

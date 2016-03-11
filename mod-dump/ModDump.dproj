@@ -82,7 +82,7 @@
 						<VersionInfo Name="AutoIncBuild">True</VersionInfo>
 						<VersionInfo Name="MajorVer">0</VersionInfo>
 						<VersionInfo Name="MinorVer">3</VersionInfo>
-						<VersionInfo Name="Release">2</VersionInfo>
+						<VersionInfo Name="Release">3</VersionInfo>
 						<VersionInfo Name="Build">1</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
@@ -95,7 +95,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName"/>
 						<VersionInfoKeys Name="FileDescription"/>
-						<VersionInfoKeys Name="FileVersion">0.3.2.1</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">0.3.3.1</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright"/>
 						<VersionInfoKeys Name="LegalTrademarks"/>
