@@ -20,7 +20,6 @@ A command line application to produce compatibility dumps on bethesda plugins bu
 - File hash (CRC32)
 - Masters
 - Description
-- Bash/Smash Tags
 - Override records
   - FormID
 - Errors
