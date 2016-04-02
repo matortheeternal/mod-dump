@@ -306,10 +306,10 @@ var
 begin
   obj := SO;
   obj.S['filename'] := plugin.filename;
-  obj.I['fileSize'] := plugin.fileSize;
-  obj.S['hash'] := plugin.hash;
-  obj.I['numRecords'] := plugin.numRecords;
-  obj.I['numOverrides'] := plugin.numOverrides;
+  obj.I['file_size'] := plugin.fileSize;
+  obj.S['crc_hash'] := plugin.hash;
+  obj.I['new_records'] := plugin.numRecords;
+  obj.I['override_records'] := plugin.numOverrides;
   obj.S['description'] := plugin.description.Text;
 
   // dump masters
@@ -332,8 +332,8 @@ begin
   for i := 0 to Pred(plugin.groups.Count) do begin
     group := TRecordGroup(plugin.groups[i]);
     childObj := SO;
-    childObj.I['numRecords'] := group.numRecords;
-    childObj.I['numOverrides'] := group.numOverrides;
+    childObj.I['new_records'] := group.numRecords;
+    childObj.I['override_records'] := group.numOverrides;
     obj.O['records'].O[string(group.signature)] := childObj;
   end;
 
@@ -381,10 +381,10 @@ begin
   obj.S['filename'] := plugin.filename;
   obj.S['description'] := plugin.description.Text;
   obj.S['author'] := plugin.author;
-  obj.S['hash'] := plugin.hash;
-  obj.I['fileSize'] := plugin.fileSize;
-  obj.I['numRecords'] := plugin.numRecords;
-  obj.I['numOverrides'] := plugin.numOverrides;
+  obj.S['crc_hash'] := plugin.hash;
+  obj.I['file_size'] := plugin.fileSize;
+  obj.I['new_records'] := plugin.numRecords;
+  obj.I['override_records'] := plugin.numOverrides;
 
 
   // dump masters
@@ -408,8 +408,8 @@ begin
     group := TRecordGroup(plugin.groups[i]);
     childObj := SO;
     childObj.S['sig'] := string(group.signature);
-    childObj.I['numRecords'] := group.numRecords;
-    childObj.I['numOverrides'] := group.numOverrides;
+    childObj.I['new_records'] := group.numRecords;
+    childObj.I['override_records'] := group.numOverrides;
     obj.A['plugin_record_groups'].O[i] := childObj;
   end;
 
