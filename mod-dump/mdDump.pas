@@ -309,7 +309,7 @@ begin
   obj.I['file_size'] := plugin.fileSize;
   obj.S['crc_hash'] := plugin.hash;
   obj.I['new_records'] := plugin.numRecords;
-  obj.I['override_records'] := plugin.numOverrides;
+  obj.I['override_record'] := plugin.numOverrides;
   obj.S['description'] := plugin.description.Text;
 
   // dump masters
@@ -318,7 +318,7 @@ begin
     obj.A['masters'].S[i] := plugin.masters[i];
 
   // dump dummy masters
-  obj.O['dummyMasters'] := SA([]);
+  obj.O['dummy_masters'] := SA([]);
   j := 0;
   for i := 0 to Pred(plugin.masters.Count) do begin
     if PluginByFilename(plugin.masters[i]).hash = dummyPluginHash then begin
@@ -344,7 +344,7 @@ begin
     childObj := SO;
     childObj.I['type'] := Ord(error.&type.id);
     childObj.S['signature'] := string(error.signature);
-    childObj.S['formID'] := error.formID;
+    childObj.S['form_id'] := error.formID;
     childObj.S['name'] := error.name;
     if error.path <> '' then
       childObj.S['path'] := error.path;
@@ -393,24 +393,24 @@ begin
     obj.A['masters'].S[i] := plugin.masters[i];
 
   // dump dummy masters
-  obj.O['dummyMasters'] := SA([]);
+  obj.O['dummy_masters'] := SA([]);
   j := 0;
   for i := 0 to Pred(plugin.masters.Count) do begin
     if PluginByFilename(plugin.masters[i]).hash = dummyPluginHash then begin
-      obj.A['dummyMasters'].S[j] := plugin.masters[i];
+      obj.A['dummy_masters'].S[j] := plugin.masters[i];
       Inc(j);
     end;
   end;
 
   // dump record groups
-  obj.O['plugin_record_groups'] := SA([]);
+  obj.O['record_groups'] := SA([]);
   for i := 0 to Pred(plugin.groups.Count) do begin
     group := TRecordGroup(plugin.groups[i]);
     childObj := SO;
     childObj.S['sig'] := string(group.signature);
     childObj.I['new_records'] := group.numRecords;
     childObj.I['override_records'] := group.numOverrides;
-    obj.A['plugin_record_groups'].O[i] := childObj;
+    obj.A['record_groups'].O[i] := childObj;
   end;
 
   //Dump Overrides
@@ -418,7 +418,7 @@ begin
   for i := 0 to Pred(plugin.overrides.Count) do begin
     childObj := SO;
     childObj.S['formid'] := IntToHex(Integer(plugin.overrides.Objects[i]), 8);
-    childObj.S['sig'] := plugin.overrides[i];
+    childObj.S['signature'] := plugin.overrides[i];
     obj.A['override_records'].O[i] := childObj;
   end;
 
@@ -429,7 +429,7 @@ begin
     childObj := SO;
     childObj.I['type'] := Ord(error.&type.id);
     childObj.S['signature'] := string(error.signature);
-    childObj.S['formID'] := error.formID;
+    childObj.S['form_id'] := error.formID;
     childObj.S['name'] := error.name;
     if error.path <> '' then
       childObj.S['path'] := error.path;
