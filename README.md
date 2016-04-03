@@ -19,8 +19,11 @@ A command line application to produce compatibility dumps on bethesda plugins bu
 - File size
 - File hash (CRC32)
 - Masters
+- Number of records
+- Number of override records
 - Description
 - Override records
+  - Signature
   - FormID
 - Errors
   - ITMs - Identical to Master records
@@ -29,10 +32,7 @@ A command line application to produce compatibility dumps on bethesda plugins bu
   - UESs - Unexpected Subrecords
   - URRs - Unresolved References
   - UERs - Unexpected References
-- Record counts
-  - Number of records
-  - Number of override records
 - Record groups
   - Group signature
-  - Record count in group
-  - Override record count in group
+  - New records
+  - Override records
