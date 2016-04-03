@@ -338,7 +338,7 @@ begin
   end;
 
   // dump errors
-  obj.O['errors'] := SA([]);
+  obj.O['plugin_errors'] := SA([]);
   for i := 0 to Pred(plugin.errors.Count) do begin
     error := TRecordError(plugin.errors[i]);
     childObj := SO;
@@ -423,7 +423,7 @@ begin
   end;
 
   // dump errors
-  obj.O['errors'] := SA([]);
+  obj.O['plugin_errors'] := SA([]);
   for i := 0 to Pred(plugin.errors.Count) do begin
     error := TRecordError(plugin.errors[i]);
     childObj := SO;
