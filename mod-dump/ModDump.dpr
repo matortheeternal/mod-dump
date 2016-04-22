@@ -28,6 +28,9 @@ begin
   // print program version
   Writeln('ModDump v', ProgramStatus.ProgramVersion);
 
+  // get program path
+  PathList.Values['ProgramPath'] := ExtractFilePath(ParamStr(0));
+
   // load and save settings
   LoadSettings;
   SaveSettings;
@@ -35,9 +38,6 @@ end;
 
 procedure LoadParams;
 begin
-  // get program path
-  PathList.Values['ProgramPath'] := ExtractFilePath(ParamStr(0));
-
   // get target game param
   TargetGame := ParamStr(2);
   if not SetGameParam(TargetGame) then

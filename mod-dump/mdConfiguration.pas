@@ -96,9 +96,9 @@ begin
     slMap.Values['abbrName'] := ProgramStatus.GameMode.abbrName;
 
     // apply template
-    dummyPluginPath := ApplyTemplate(dummyPluginPath, slMap);
-    pluginsPath := ApplyTemplate(pluginsPath, slMap);
-    dumpPath := ApplyTemplate(dumpPath, slMap);
+    dummyPluginPath := PathList.Values['ProgramPath'] + ApplyTemplate(dummyPluginPath, slMap);
+    pluginsPath := PathList.Values['ProgramPath'] + ApplyTemplate(pluginsPath, slMap);
+    dumpPath := PathList.Values['ProgramPath'] + ApplyTemplate(dumpPath, slMap);
 
     // force directories to exist
     ForceDirectories(pluginsPath);
@@ -170,12 +170,12 @@ end;
 procedure LoadSettings;
 begin
   settings := TSettings.Create;
-  TRttiIni.Load('settings.ini', settings);
+  TRttiIni.Load(PathList.Values['ProgramPath'] + 'settings.ini', settings);
 end;
 
 procedure SaveSettings;
 begin
-  TRttiIni.Save('settings.ini', settings);
+  TRttiIni.Save(PathList.Values['ProgramPath'] + 'settings.ini', settings);
 end;
 
 initialization
