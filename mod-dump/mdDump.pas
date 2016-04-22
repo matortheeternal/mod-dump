@@ -109,6 +109,25 @@ begin
   end;
 end;
 
+procedure DeleteDummyPlugins;
+var
+  i: Integer;
+  plugin: TPlugin;
+  sFilePath: String;
+begin
+  Writeln(' ');
+  Writeln('== DELETING DUMMIES ==');
+
+  for i := 0 to Pred(PluginsList.Count) do begin
+    plugin := TPlugin(PluginsList[i]);
+    if (plugin.hash = dummyPluginHash) then begin
+      sFilePath := settings.pluginsPath + plugin.filename;
+      WriteLn('Deleting ' + sFilePath);
+      DeleteFile(PChar(sFilePath));
+    end;
+  end;
+end;
+
 procedure PrintLoadOrder(var sl: TStringList);
 var
   i: Integer;
@@ -403,14 +422,14 @@ begin
   end;
 
   // dump record groups
-  obj.O['record_groups'] := SA([]);
+  obj.O['plugin_record_groups'] := SA([]);
   for i := 0 to Pred(plugin.groups.Count) do begin
     group := TRecordGroup(plugin.groups[i]);
     childObj := SO;
     childObj.S['sig'] := string(group.signature);
     childObj.I['new_records'] := group.numRecords;
     childObj.I['override_records'] := group.numOverrides;
-    obj.A['record_groups'].O[i] := childObj;
+    obj.A['plugin_record_groups'].O[i] := childObj;
   end;
 
   //Dump Overrides
@@ -437,11 +456,6 @@ begin
       childObj.S['data'] := error.data;
     obj.A['errors'].Add(childObj);
   end;
-
-  // dump overrides
-  obj.O['overrides'] := SA([]);
-  for i := 0 to Pred(plugin.overrides.Count) do
-    obj.A['overrides'].S[i] := plugin.overrides[i];
 
   // save to disk
   sl := TStringList.Create;
@@ -482,6 +496,7 @@ begin
     JsonDumpAlt(plugin);
   finally
     wbFileForceClosed;
+    DeleteDummyPlugins;
     slLoadOrder.Free;
   end;
 end;
