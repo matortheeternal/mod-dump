@@ -433,12 +433,12 @@ begin
   end;
 
   //Dump Overrides
-  obj.O['override_records'] := SA([]);
+  obj.O['overrides'] := SA([]);
   for i := 0 to Pred(plugin.overrides.Count) do begin
     childObj := SO;
     childObj.S['formid'] := IntToHex(Integer(plugin.overrides.Objects[i]), 8);
     childObj.S['signature'] := plugin.overrides[i];
-    obj.A['override_records'].O[i] := childObj;
+    obj.A['overrides'].O[i] := childObj;
   end;
 
   // dump errors
@@ -454,7 +454,7 @@ begin
       childObj.S['path'] := error.path;
     if error.data <> '' then
       childObj.S['data'] := error.data;
-    obj.A['errors'].Add(childObj);
+    obj.A['plugin_errors'].Add(childObj);
   end;
 
   // save to disk
