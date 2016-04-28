@@ -42,10 +42,6 @@ begin
   AddMessage('Game: ' + ProgramStatus.GameMode.longName);
   AddMessage(' ');
 
-  // load and save settings
-  LoadSettings;
-  SaveSettings;
-
   // dump record groups
   if ParamStr(1) = '-dumpGroups' then begin
     bDumpGroups := true;
