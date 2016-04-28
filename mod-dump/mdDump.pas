@@ -176,6 +176,7 @@ begin
     // load plugin
     try
       plugin := TPlugin.Create;
+      plugin.filepath := sFilePath;
       plugin.filename := sFilename;
       plugin._File := wbFile(sFilePath, i, '', false, false);
       plugin._File._AddRef;
@@ -199,7 +200,7 @@ begin
 
     // load hardcoded dat
     if i = 0 then try
-      aFile := wbFile(wbDataPath + wbGameName + wbHardcodedDat, 0);
+      aFile := wbFile(settings.pluginSearchPath + wbGameName + wbHardcodedDat, 0);
       aFile._AddRef;
     except
       on x: Exception do begin
