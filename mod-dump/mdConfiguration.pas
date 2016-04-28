@@ -36,7 +36,7 @@ type
     falloutNVPath: string;
     constructor Create; virtual;
     procedure UpdateForGame;
-    function GamePath: String;
+    function GameDataPath: String;
   end;
   TProgramStatus = class(TObject)
   public
@@ -87,17 +87,17 @@ var
   gamePath: String;
 begin
   // default settings
-  dummyPluginPath := '{{gameName}}\plugins\EmptyPlugin.esp';
-  pluginSearchPath := '{{gameName}}\plugins\';
-  dumpPath := '{{gameName}}\dumps\';
+  dummyPluginPath := '{{gameName}}\EmptyPlugin.esp';
+  pluginSearchPath := '{{gameName}}\';
+  dumpPath := '{{gameName}}\';
   language := 'English';
   bPrintHashes := false;
   // game paths
-  skyrimPath := GetGamePath(GameArray[1]);
-  oblivionPath := GetGamePath(GameArray[2]);
-  falloutNVPath := GetGamePath(GameArray[3]);
-  fallout3Path := GetGamePath(GameArray[4]);
-  fallout4Path := GetGamePath(GameArray[5]);
+  skyrimPath := GetGamePath(GameArray[1]) + 'data\';
+  oblivionPath := GetGamePath(GameArray[2]) + 'data\';
+  falloutNVPath := GetGamePath(GameArray[3]) + 'data\';
+  fallout3Path := GetGamePath(GameArray[4]) + 'data\';
+  fallout4Path := GetGamePath(GameArray[5]) + 'data\';
 end;
 
 procedure TSettings.UpdateForGame;
@@ -128,7 +128,7 @@ begin
   end;
 end;
 
-function TSettings.GamePath: string;
+function TSettings.GameDataPath: string;
 begin
   case ProgramStatus.GameMode.gameMode of
     gmTES5: Result := skyrimPath;
@@ -159,7 +159,7 @@ begin
   wbGameName := ProgramStatus.GameMode.gameName;
   wbGameMode := ProgramStatus.GameMode.gameMode;
   wbAppName := ProgramStatus.GameMode.appName;
-  wbDataPath := settings.GamePath;
+  wbDataPath := settings.GameDataPath;
   wbVWDInTemporary := wbGameMode in [gmTES5, gmFO3, gmFNV];
   wbDisplayLoadOrderFormID := True;
   wbSortSubRecords := True;

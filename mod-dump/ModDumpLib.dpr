@@ -64,9 +64,9 @@ end;
 
 function Dump: WordBool; stdcall;
 begin
+  Result := false;
   if not bIsPlugin or bIsText then begin
     AddMessage('ERROR: No plugin or list loaded.');
-    Result := false;
     exit;
   end;
 
@@ -77,11 +77,10 @@ begin
       DumpPluginsList(TargetFile);
     Result := true;
   except
-    on E: Exception do begin
-      Result := false;
+    on E: Exception do
       AddMessage(E.ClassName + ': ' + E.Message);
-    end;
   end;
+  SaveBuffer;
 end;
 
 procedure StartModDump; stdcall;
@@ -107,6 +106,7 @@ exports
   Dump;
 
 begin
+  IsMultiThread := True;
 end.
 
 
