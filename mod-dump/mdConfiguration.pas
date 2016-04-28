@@ -24,12 +24,19 @@ type
   public
     [IniSection('General')]
     dummyPluginPath: string;
-    pluginsPath: string;
+    pluginSearchPath: string;
     dumpPath: string;
     language: string;
     bPrintHashes: boolean;
+    [IniSection('Games')]
+    skyrimPath: string;
+    oblivionPath: string;
+    fallout4Path: string;
+    fallout3Path: string;
+    falloutNVPath: string;
     constructor Create; virtual;
     procedure UpdateForGame;
+    function GamePath: String;
   end;
   TProgramStatus = class(TObject)
   public
@@ -39,6 +46,8 @@ type
     constructor Create; virtual;
   end;
 
+  procedure SetGame(id: integer);
+  function GetGamePath(mode: TGameMode): string;
   function SetGameParam(param: string): boolean;
   procedure LoadSettings;
   procedure SaveSettings;
@@ -74,13 +83,21 @@ implementation
 
 { TSettings }
 constructor TSettings.Create;
+var
+  gamePath: String;
 begin
   // default settings
   dummyPluginPath := '{{gameName}}\plugins\EmptyPlugin.esp';
-  pluginsPath := '{{gameName}}\plugins\';
+  pluginSearchPath := '{{gameName}}\plugins\';
   dumpPath := '{{gameName}}\dumps\';
   language := 'English';
   bPrintHashes := false;
+  // game paths
+  skyrimPath := GetGamePath(GameArray[1]);
+  oblivionPath := GetGamePath(GameArray[2]);
+  falloutNVPath := GetGamePath(GameArray[3]);
+  fallout3Path := GetGamePath(GameArray[4]);
+  fallout4Path := GetGamePath(GameArray[5]);
 end;
 
 procedure TSettings.UpdateForGame;
@@ -97,11 +114,9 @@ begin
 
     // apply template
     dummyPluginPath := PathList.Values['ProgramPath'] + ApplyTemplate(dummyPluginPath, slMap);
-    pluginsPath := PathList.Values['ProgramPath'] + ApplyTemplate(pluginsPath, slMap);
     dumpPath := PathList.Values['ProgramPath'] + ApplyTemplate(dumpPath, slMap);
 
     // force directories to exist
-    ForceDirectories(pluginsPath);
     ForceDirectories(dumpPath);
 
     // update empty plugin hash if empty plugin exists
@@ -109,6 +124,17 @@ begin
       dummyPluginHash := FileCRC32(dummyPluginPath);
   finally
     slMap.Free;
+  end;
+end;
+
+function TSettings.GamePath: string;
+begin
+  case ProgramStatus.GameMode.gameMode of
+    gmTES5: Result := skyrimPath;
+    gmTES4: Result := oblivionPath;
+    gmFNV: Result := falloutNVPath;
+    gmFO3: Result := fallout3Path;
+    gmFO4: Result := fallout4Path;
   end;
 end;
 
@@ -130,7 +156,7 @@ begin
   wbGameName := ProgramStatus.GameMode.gameName;
   wbGameMode := ProgramStatus.GameMode.gameMode;
   wbAppName := ProgramStatus.GameMode.appName;
-  wbDataPath := settings.pluginsPath;
+  wbDataPath := settings.GamePath;
   wbVWDInTemporary := wbGameMode in [gmTES5, gmFO3, gmFNV];
   wbDisplayLoadOrderFormID := True;
   wbSortSubRecords := True;
@@ -150,6 +176,48 @@ begin
     gmTES4: DefineTES4;
     gmFO3: DefineFO3;
   end;
+end;
+
+{ Gets the path of a game from registry key or app path }
+function GetGamePath(mode: TGameMode): string;
+const
+  sBethRegKey     = '\SOFTWARE\Bethesda Softworks\';
+  sBethRegKey64   = '\SOFTWARE\Wow6432Node\Bethesda Softworks\';
+  sSteamRegKey    = '\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\'+
+    'Steam App ';
+  sSteamRegKey64  = '\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\'+
+    'Uninstall\Steam App ';
+var
+  i: Integer;
+  gameName: string;
+  keys, appIDs: TStringList;
+begin
+  Result := '';
+
+  // initialize variables
+  gameName := mode.gameName;
+  keys := TStringList.Create;
+  appIDs := TStringList.Create;
+  appIDs.CommaText := mode.appIDs;
+
+  // add keys to check
+  keys.Add(sBethRegKey + gameName + '\Installed Path');
+  keys.Add(sBethRegKey64 + gameName + '\Installed Path');
+  for i := 0 to Pred(appIDs.Count) do begin
+    keys.Add(sSteamRegKey + appIDs[i] + '\InstallLocation');
+    keys.Add(sSteamRegKey64 + appIDs[i] + '\InstallLocation');
+  end;
+
+  // try to find path from registry
+  Result := TryRegistryKeys(keys);
+
+  // free memory
+  keys.Free;
+  appIDs.Free;
+
+  // set result
+  if Result <> '' then
+    Result := IncludeTrailingPathDelimiter(Result);
 end;
 
 function SetGameParam(param: string): boolean;
