@@ -7,7 +7,8 @@ uses
   mteHelpers,
   mdConfiguration in 'mdConfiguration.pas',
   mdDump in 'mdDump.pas',
-  mdCore in 'mdCore.pas';
+  mdCore in 'mdCore.pas',
+  mdMessages in 'mdMessages.pas';
 
 {$R *.res}
 {$MAXSTACKSIZE 2097152}
@@ -30,10 +31,6 @@ begin
 
   // get program path
   PathList.Values['ProgramPath'] := ExtractFilePath(ParamStr(0));
-
-  // load and save settings
-  LoadSettings;
-  SaveSettings;
 end;
 
 procedure LoadParams;
@@ -42,8 +39,12 @@ begin
   TargetGame := ParamStr(2);
   if not SetGameParam(TargetGame) then
     raise Exception.Create(Format('Invalid GameMode "%s"', [TargetGame]));
-  Writeln('Game: ', ProgramStatus.GameMode.longName);
-  Writeln(' ');
+  AddMessage('Game: ' + ProgramStatus.GameMode.longName);
+  AddMessage(' ');
+
+  // load and save settings
+  LoadSettings;
+  SaveSettings;
 
   // dump record groups
   if ParamStr(1) = '-dumpGroups' then begin
@@ -60,9 +61,9 @@ begin
   bIsPlugin := IsPlugin(TargetFile);
   bIsText := StrEndsWith(TargetFile, '.txt');
   if bIsPlugin then
-    Writeln('Dumping plugin: ', ExtractFileName(TargetFile))
+    AddMessage('Dumping plugin: ' + ExtractFileName(TargetFile))
   else if bIsText then
-    Writeln('Dumping plugins in list: ', ExtractFileName(TargetFile))
+    AddMessage('Dumping plugins in list: ' + ExtractFileName(TargetFile))
   else
     raise Exception.Create('Target file does not match *.esp, *.esm, or *.txt');
 end;
@@ -81,6 +82,6 @@ begin
       DumpPluginsList(TargetFile);
   except
     on E: Exception do
-      Writeln(E.ClassName, ': ', E.Message);
+      AddMessage(E.ClassName + ': ' + E.Message);
   end;
 end.
