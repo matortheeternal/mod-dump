@@ -54,7 +54,7 @@ begin
   if bIsPlugin then
     AddMessage('Dumping plugin: ' + ExtractFileName(TargetFile))
   else if bIsText then
-    Writeln('Dumping plugins in list: ' + ExtractFileName(TargetFile))
+    AddMessage('Dumping plugins in list: ' + ExtractFileName(TargetFile))
   else
     AddMessage('Target file does not match *.esp, *.esm, or *.txt');
 
