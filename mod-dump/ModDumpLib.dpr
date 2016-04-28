@@ -29,9 +29,9 @@ var
   TargetFile: string;
   bIsPlugin, bIsText: boolean;
 
-function GetBuffer: PAnsiChar; StdCall;
+procedure GetBuffer(str: PAnsiChar; len: Integer); StdCall;
 begin
-  Result := PAnsiChar(AnsiString(MessageBuffer.Text));
+  StrLCopy(str, PAnsiChar(AnsiString(MessageBuffer.Text)), len);
 end;
 
 procedure SetGameMode(mode: Integer); stdcall;
