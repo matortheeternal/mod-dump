@@ -11,7 +11,6 @@ library ModDumpLib;
   using PChar or ShortString parameters. }
 
 uses
-  ShareMem,
   SysUtils,
   Classes,
   mteHelpers,
@@ -30,22 +29,19 @@ var
   TargetFile: string;
   bIsPlugin, bIsText: boolean;
 
-function GetMessageBuffer: string; stdcall;
+function GetBuffer: PChar; StdCall;
 begin
-  Result := MessageBuffer.Text;
-  MessageBuffer.Clear;
+  Result := PChar(MessageBuffer.Text);
 end;
 
 procedure SetGameMode(mode: Integer); stdcall;
 begin
   SetGame(mode);
-  Writeln('Game: ', ProgramStatus.GameMode.longName);
-  Writeln(' ');
-  LoadSettings;
-  SaveSettings;
+  AddMessage('Game: ' + ProgramStatus.GameMode.longName);
+  AddMessage(' ');
 end;
 
-function Prepare(TargetFile: string): Boolean; stdcall;
+function Prepare(TargetFile: ShortString): Boolean; stdcall;
 begin
   // get target file param
   if not FileExists(TargetFile) then
@@ -87,17 +83,27 @@ begin
   end;
 end;
 
-procedure Close; stdcall;
+procedure Initialize; stdcall;
+begin
+  MessageBuffer := TStringList.Create;
+  AddMessage('ModDump v' + ProgramStatus.ProgramVersion);
+
+  // get program path
+  PathList.Values['ProgramPath'] := ExtractFilePath(ParamStr(0));
+end;
+
+procedure Finalize; stdcall;
 begin
   MessageBuffer.Free;
 end;
 
 exports
-  GetMessageBuffer, SetGameMode, Prepare, Dump, Close;
+  Initialize,
+  Finalize,
+  GetBuffer,
+  SetGameMode;
 
 begin
-  MessageBuffer := TStringList.Create;
-  AddMessage('ModDump v' + ProgramStatus.ProgramVersion);
 end.
 
 
