@@ -172,13 +172,15 @@ begin
     // print log message
     sFilename := ExtractFilename(sFilePath);
     AddMessage('Loading ' + sFilename + '...');
+    AddMessage('['+sFilePath+']');
 
     // load plugin
+    SetCurrentDir(wbDataPath);
     try
       plugin := TPlugin.Create;
-      plugin.filepath := sFilePath;
+      plugin.filepath := wbDataPath + sFileName;
       plugin.filename := sFilename;
-      plugin._File := wbFile(sFilePath, i, '', false, false);
+      plugin._File := wbFile(sFilename, i, '', false, false);
       plugin._File._AddRef;
       bIsDumpFile := sFilePath = dumpFilePath;
       plugin.GetMdData(bIsDumpFile);

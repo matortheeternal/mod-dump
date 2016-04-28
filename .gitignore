@@ -68,3 +68,5 @@ mod-dump/Skyrim/plugins/*.esm
 # OSX files to ignore
 .DS_STORE
 mod-dump/Debug/
+mod-dump/Skyrim/
+mod-dump/mod_dump_log.txt

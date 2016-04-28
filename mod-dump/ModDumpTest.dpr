@@ -5,21 +5,21 @@ program ModDumpTest;
 uses
   SysUtils;
 
-procedure Initialize; StdCall; external 'ModDumpLib.dll';
-function GetBuffer: Pchar; StdCall; external 'ModDumpLib.dll';
-procedure Finalize; StdCall; external 'ModDumpLib.dll';
+procedure StartModDump; StdCall; external 'ModDumpLib.dll';
+function GetBuffer: PAnsiChar; StdCall; external 'ModDumpLib.dll';
+procedure EndModDump; StdCall; external 'ModDumpLib.dll';
 procedure SetGameMode(mode: Integer); stdcall; external 'ModDumpLib.dll';
-function Prepare(TargetFile: PChar): Boolean; stdcall; external 'ModDumpLib.dll';
-function Dump: Boolean; stdcall; external 'ModDumpLib.dll';
+function Prepare(TargetFile: PAnsiChar): WordBool; stdcall; external 'ModDumpLib.dll';
+function Dump: WordBool; stdcall; external 'ModDumpLib.dll';
 
 begin
   WriteLn('Test');
-  Initialize;
+  StartModDump;
   SetGameMode(1);
-  Prepare('Skyrim\Plugins\iHUD.esp');
+  Prepare('Skyrim\iHUD.esp');
   Dump;
   WriteLn(GetBuffer);
-  Finalize;
+  EndModDump;
   WriteLn('Done');
   Readln;
 end.

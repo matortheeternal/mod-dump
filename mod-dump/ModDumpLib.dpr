@@ -31,7 +31,7 @@ var
 
 function GetBuffer: PAnsiChar; StdCall;
 begin
-  Result := PAnsiChar(MessageBuffer.Text);
+  Result := PAnsiChar(AnsiString(MessageBuffer.Text));
 end;
 
 procedure SetGameMode(mode: Integer); stdcall;
@@ -43,7 +43,7 @@ end;
 
 function Prepare(FilePath: PAnsiChar): WordBool; stdcall;
 begin
-  TargetFile := String(FilePath);
+  TargetFile := String(AnsiString(FilePath));
   // get target file param
   if not FileExists(TargetFile) then
     raise Exception.Create('Target file not found');
@@ -69,6 +69,7 @@ begin
     AddMessage('ERROR: No plugin or list loaded.');
     exit;
   end;
+  SaveBuffer;
 
   try
     if bIsPlugin then
@@ -77,10 +78,11 @@ begin
       DumpPluginsList(TargetFile);
     Result := true;
   except
-    on E: Exception do
+    on E: Exception do begin
       AddMessage(E.ClassName + ': ' + E.Message);
+      SaveBuffer;
+    end;
   end;
-  SaveBuffer;
 end;
 
 procedure StartModDump; stdcall;
