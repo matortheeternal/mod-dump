@@ -41,8 +41,9 @@ begin
   AddMessage(' ');
 end;
 
-function Prepare(TargetFile: ShortString): Boolean; stdcall;
+function Prepare(FilePath: PChar): Boolean; stdcall;
 begin
+  TargetFile := String(FilePath);
   // get target file param
   if not FileExists(TargetFile) then
     raise Exception.Create('Target file not found');
@@ -101,7 +102,9 @@ exports
   Initialize,
   Finalize,
   GetBuffer,
-  SetGameMode;
+  SetGameMode,
+  Prepare,
+  Dump;
 
 begin
 end.
