@@ -150,6 +150,8 @@ procedure SetGame(id: integer);
 begin
   // update our vars
   ProgramStatus.GameMode := GameArray[id];
+  LoadSettings;
+  SaveSettings;
   settings.UpdateForGame;
 
   // update xEdit vars
