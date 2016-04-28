@@ -29,9 +29,9 @@ var
   TargetFile: string;
   bIsPlugin, bIsText: boolean;
 
-function GetBuffer: PChar; StdCall;
+function GetBuffer: PAnsiChar; StdCall;
 begin
-  Result := PChar(MessageBuffer.Text);
+  Result := PAnsiChar(MessageBuffer.Text);
 end;
 
 procedure SetGameMode(mode: Integer); stdcall;
@@ -41,7 +41,7 @@ begin
   AddMessage(' ');
 end;
 
-function Prepare(FilePath: PChar): Boolean; stdcall;
+function Prepare(FilePath: PAnsiChar): WordBool; stdcall;
 begin
   TargetFile := String(FilePath);
   // get target file param
@@ -62,7 +62,7 @@ begin
   Result := bIsPlugin or bIsText;
 end;
 
-function Dump: Boolean; stdcall;
+function Dump: WordBool; stdcall;
 begin
   if not bIsPlugin or bIsText then begin
     AddMessage('ERROR: No plugin or list loaded.');
@@ -84,7 +84,7 @@ begin
   end;
 end;
 
-procedure Initialize; stdcall;
+procedure StartModDump; stdcall;
 begin
   MessageBuffer := TStringList.Create;
   AddMessage('ModDump v' + ProgramStatus.ProgramVersion);
@@ -93,14 +93,14 @@ begin
   PathList.Values['ProgramPath'] := ExtractFilePath(ParamStr(0));
 end;
 
-procedure Finalize; stdcall;
+procedure EndModDump; stdcall;
 begin
   MessageBuffer.Free;
 end;
 
 exports
-  Initialize,
-  Finalize,
+  StartModDump,
+  EndModDump,
   GetBuffer,
   SetGameMode,
   Prepare,
