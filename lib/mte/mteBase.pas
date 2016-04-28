@@ -18,6 +18,7 @@ type
     fileSize: Int64;
     dateModified: string;
     filename: string;
+    filepath: string;
     numRecords: Integer;
     numOverrides: Integer;
     author: string;
@@ -123,8 +124,8 @@ begin
   description.Text := Wordwrap(s, 80);
 
   // get file attributes
-  fileSize := GetFileSize(wbDataPath + filename);
-  dateModified := DateTimeToStr(GetLastModified(wbDataPath + filename));
+  fileSize := GetFileSize(filePath);
+  dateModified := DateTimeToStr(GetLastModified(filePath));
 end;
 
 procedure TBasePlugin.UpdateData;
@@ -134,7 +135,7 @@ end;
 
 procedure TBasePlugin.GetHash;
 begin
-  hash := IntToHex(wbCRC32File(wbDataPath + filename), 8);
+  hash := IntToHex(wbCRC32File(filepath), 8);
 end;
 
 procedure TBasePlugin.GetNumOverrides;
