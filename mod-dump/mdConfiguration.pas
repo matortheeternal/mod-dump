@@ -113,6 +113,7 @@ begin
     slMap.Values['abbrName'] := ProgramStatus.GameMode.abbrName;
 
     // apply template
+    pluginSearchPath := PathList.Values['ProgramPath'] + ApplyTemplate(pluginSearchPath, slMap);
     dummyPluginPath := PathList.Values['ProgramPath'] + ApplyTemplate(dummyPluginPath, slMap);
     dumpPath := PathList.Values['ProgramPath'] + ApplyTemplate(dumpPath, slMap);
 
