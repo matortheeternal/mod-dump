@@ -327,8 +327,8 @@ begin
   obj.O['overrides'] := SA([]);
   for i := 0 to Pred(plugin.overrides.Count) do begin
     childObj := SO;
-    childObj.S['formid'] := IntToHex(Integer(plugin.overrides.Objects[i]), 8);
-    childObj.S['signature'] := plugin.overrides[i];
+    childObj.S['fid'] := IntToHex(Integer(plugin.overrides.Objects[i]), 8);
+    childObj.S['sig'] := plugin.overrides[i];
     obj.A['overrides'].O[i] := childObj;
   end;
 
