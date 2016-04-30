@@ -34,6 +34,11 @@ begin
   StrLCopy(str, PAnsiChar(AnsiString(MessageBuffer.Text)), len);
 end;
 
+procedure FlushBuffer; StdCall;
+begin
+  MessageBuffer.Clear;
+end;
+
 procedure SetGameMode(mode: Integer); stdcall;
 begin
   SetGame(mode);
@@ -103,6 +108,7 @@ exports
   StartModDump,
   EndModDump,
   GetBuffer,
+  FlushBuffer,
   SetGameMode,
   Prepare,
   Dump;
