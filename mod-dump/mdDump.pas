@@ -293,8 +293,8 @@ begin
   obj.S['author'] := plugin.author;
   obj.S['crc_hash'] := plugin.hash;
   obj.I['file_size'] := plugin.fileSize;
-  obj.I['new_records'] := plugin.numRecords;
-  obj.I['override_records'] := plugin.numOverrides;
+  obj.I['record_count'] := plugin.numRecords;
+  obj.I['override_count'] := plugin.numOverrides;
 
 
   // dump masters
@@ -318,8 +318,8 @@ begin
     group := TRecordGroup(plugin.groups[i]);
     childObj := SO;
     childObj.S['sig'] := string(group.signature);
-    childObj.I['new_records'] := group.numRecords;
-    childObj.I['override_records'] := group.numOverrides;
+    childObj.I['record_count'] := group.numRecords;
+    childObj.I['override_count'] := group.numOverrides;
     obj.A['plugin_record_groups'].O[i] := childObj;
   end;
 
