@@ -13,6 +13,7 @@ library ModDumpLib;
 uses
   SysUtils,
   Classes,
+  superobject,
   mteHelpers,
   mdConfiguration in 'mdConfiguration.pas',
   mdCore in 'mdCore.pas',
@@ -67,7 +68,9 @@ begin
   Result := bIsPlugin or bIsText;
 end;
 
-function Dump: WordBool; stdcall;
+function Dump(str: PAnsiChar; len: Integer): WordBool; stdcall;
+var
+  obj: ISuperObject;
 begin
   Result := false;
   if not bIsPlugin or bIsText then begin
@@ -77,10 +80,14 @@ begin
   SaveBuffer;
 
   try
+    // dump the plugin/pluginslist
     if bIsPlugin then
-      DumpPlugin(TargetFile)
+      obj := DumpPlugin(TargetFile)
     else if bIsText then
-      DumpPluginsList(TargetFile);
+      obj := DumpPluginsList(TargetFile);
+
+    // return the json of the dump/s
+    StrLCopy(str, PAnsiChar(AnsiString(obj.AsJSON)), len);
     Result := true;
   except
     on E: Exception do begin
