@@ -77,7 +77,6 @@ begin
     AddMessage('ERROR: No plugin or list loaded.');
     exit;
   end;
-  SaveBuffer;
 
   try
     // dump the plugin/pluginslist
