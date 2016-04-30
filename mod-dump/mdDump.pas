@@ -15,8 +15,8 @@ uses
 
   function IsPlugin(filename: string): boolean;
   procedure DumpGroups;
-  procedure DumpPlugin(filePath: string);
-  procedure DumpPluginsList(filePath: string);
+  function DumpPlugin(filePath: string): ISuperObject;
+  function DumpPluginsList(filePath: string): ISuperObject;
 
 implementation
 
@@ -225,54 +225,8 @@ begin
     AddMessage(' ' + sl[i]);
 end;
 
+
 procedure WriteDump(plugin: TPlugin);
-var
-  i: Integer;
-  group: TRecordGroup;
-  error: TRecordError;
-begin
-  AddMessage(' ');
-  AddMessage('== DUMP ==');
-
-  // write main attributes
-  AddMessage('Filename: ' + plugin.filename);
-  AddMessage('Description'#13#10 + plugin.description.text);
-  AddMessage('Author: ' + plugin.author);
-  AddMessage('Hash: ' + plugin.hash);
-  AddMessage('File size: ' + FormatByteSize(plugin.fileSize));
-  AddMessage('Masters'#13#10 + plugin.masters.Text);
-  AddMessage('Number of records: ' + IntToStr(plugin.numRecords));
-  AddMessage('Number of overrides: ' + IntToStr(plugin.numOverrides));
-
-  // write record groups
-  Writeln('Record groups:');
-  for i := 0 to Pred(plugin.groups.Count) do begin
-    group := TRecordGroup(plugin.groups[i]);
-    AddMessage(Format(' [%s]  Records:%5d, Overrides:%5d',
-      [string(group.signature), group.numRecords, group.numOverrides]));
-  end;
-  if plugin.groups.Count = 0 then
-    AddMessage(' No records');
-
-  // write errors
-  AddMessage('Errors:');
-  for i := 0 to Pred(plugin.errors.Count) do begin
-    error := TRecordError(plugin.errors[i]);
-    if error.path <> '' then
-      AddMessage(Format(' [%s:%s] %s at %s', [string(error.signature),
-        error.formID, error.&type.shortName, error.path]))
-    else
-      AddMessage(Format(' [%s:%s] %s', [string(error.signature),
-        error.formID, error.&type.shortName]))
-  end;
-  if ProgramStatus.bUsedDummyPlugins then
-    AddMessage(' Unknown')
-  else if (plugin.errors.Count = 0) then
-    AddMessage(' No errors');
-end;
-
-
-procedure WriteDumpAlt(plugin: TPlugin);
 var
   i: Integer;
   group: TRecordGroup;
@@ -325,79 +279,7 @@ begin
     AddMessage(' No errors');
 end;
 
-procedure JsonDump(plugin: TPlugin);
-var
-  obj, childObj: ISuperObject;
-  i, j: Integer;
-  group: TRecordGroup;
-  error: TRecordError;
-  sl: TStringList;
-begin
-  obj := SO;
-  obj.S['filename'] := plugin.filename;
-  obj.I['file_size'] := plugin.fileSize;
-  obj.S['crc_hash'] := plugin.hash;
-  obj.I['new_records'] := plugin.numRecords;
-  obj.I['override_record'] := plugin.numOverrides;
-  obj.S['description'] := plugin.description.Text;
-
-  // dump masters
-  obj.O['masters'] := SA([]);
-  for i := 0 to Pred(plugin.masters.Count) do
-    obj.A['masters'].S[i] := plugin.masters[i];
-
-  // dump dummy masters
-  obj.O['dummy_masters'] := SA([]);
-  j := 0;
-  for i := 0 to Pred(plugin.masters.Count) do begin
-    if PluginByFilename(plugin.masters[i]).hash = dummyPluginHash then begin
-      obj.A['dummyMasters'].S[j] := plugin.masters[i];
-      Inc(j);
-    end;
-  end;
-
-  // dump record groups
-  obj.O['records'] := SO;
-  for i := 0 to Pred(plugin.groups.Count) do begin
-    group := TRecordGroup(plugin.groups[i]);
-    childObj := SO;
-    childObj.I['new_records'] := group.numRecords;
-    childObj.I['override_records'] := group.numOverrides;
-    obj.O['records'].O[string(group.signature)] := childObj;
-  end;
-
-  // dump errors
-  obj.O['plugin_errors'] := SA([]);
-  for i := 0 to Pred(plugin.errors.Count) do begin
-    error := TRecordError(plugin.errors[i]);
-    childObj := SO;
-    childObj.I['type'] := Ord(error.&type.id);
-    childObj.S['signature'] := string(error.signature);
-    childObj.S['form_id'] := error.formID;
-    childObj.S['name'] := error.name;
-    if error.path <> '' then
-      childObj.S['path'] := error.path;
-    if error.data <> '' then
-      childObj.S['data'] := error.data;
-    obj.A['errors'].Add(childObj);
-  end;
-
-  // dump overrides
-  obj.O['overrides'] := SA([]);
-  for i := 0 to Pred(plugin.overrides.Count) do
-    obj.A['overrides'].S[i] := plugin.overrides[i];
-
-  // save to disk
-  sl := TStringList.Create;
-  try
-    sl.Text := obj.AsJSon;
-    sl.SaveToFile(settings.dumpPath + plugin.filename + '.json');
-  finally
-    sl.Free;
-  end;
-end;
-
-procedure JsonDumpAlt(plugin: TPlugin);
+function JsonDump(plugin: TPlugin): ISuperObject;
 var
   obj, childObj: ISuperObject;
   i, j: Integer;
@@ -476,15 +358,12 @@ begin
       sl.Free;
     end;
   end;
+
+  // result is JSON object
+  Result := obj;
 end;
 
-{
-  1. Build load order
-  2. Load plugins, don't build references
-  3. Get information from plugin and print to log and a dump file
-  4. Terminate
-}
-procedure DumpPlugin(filePath: string);
+function DumpPlugin(filePath: string): ISuperObject;
 var
   slLoadOrder: TStringList;
   sFileName: string;
@@ -503,8 +382,8 @@ begin
     // dump info on our plugin
     sFileName := ExtractFilename(filePath);
     plugin := PluginByFilename(sFileName);
-    WriteDumpAlt(plugin);
-    JsonDumpAlt(plugin);
+    WriteDump(plugin);
+    Result := JsonDump(plugin);
   finally
     wbFileForceClosed;
     DeleteDummyPlugins;
@@ -512,12 +391,14 @@ begin
   end;
 end;
 
-procedure DumpPluginsList(filePath: string);
+function DumpPluginsList(filePath: string): ISuperObject;
 var
   sl: TStringList;
   i: Integer;
   targetPath: string;
 begin
+  Result := SO;
+  Result.O['plugins'] := SA([]);
   sl := TStringList.Create;
   try
     // load list of plugins to dump
@@ -536,7 +417,7 @@ begin
           raise Exception.Create('Does not match *.esp or *.esm');
 
         // dump the plugin
-        DumpPlugin(targetPath);
+        Result.A['plugins'].O[i] := DumpPlugin(targetPath);
       except
         on x: Exception do
           AddMessage(Format('%s: %s', [targetPath, x.Message]));
