@@ -28,6 +28,7 @@ type
     dumpPath: string;
     language: string;
     bPrintHashes: boolean;
+    bSaveToDisk: boolean;
     [IniSection('Games')]
     skyrimPath: string;
     oblivionPath: string;
@@ -92,6 +93,7 @@ begin
   dumpPath := '{{gameName}}\';
   language := 'English';
   bPrintHashes := false;
+  bSaveToDisk := false;
   // game paths
   skyrimPath := GetGamePath(GameArray[1]) + 'data\';
   oblivionPath := GetGamePath(GameArray[2]) + 'data\';

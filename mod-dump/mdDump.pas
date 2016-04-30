@@ -467,12 +467,14 @@ begin
   end;
 
   // save to disk
-  sl := TStringList.Create;
-  try
-    sl.Text := obj.AsJSon;
-    sl.SaveToFile(settings.dumpPath + plugin.filename + '.json');
-  finally
-    sl.Free;
+  if settings.bSaveToDisk then begin
+    sl := TStringList.Create;
+    try
+      sl.Text := obj.AsJSon;
+      sl.SaveToFile(settings.dumpPath + plugin.filename + '.json');
+    finally
+      sl.Free;
+    end;
   end;
 end;
 
