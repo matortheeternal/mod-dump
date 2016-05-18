@@ -21,7 +21,7 @@ type
   public
     &type: TErrorType;
     signature: TwbSignature;
-    formID: string;
+    formID: integer;
     name: string;
     path: string;
     data: string;
@@ -178,7 +178,7 @@ end;
 constructor TRecordError.Create(rec: IwbMainRecord; id: TErrorTypeID);
 begin
   signature := rec.signature;
-  formID := IntToHex(rec.GetLoadOrderFormID, 8);
+  formID := rec.FixedFormID;
   name := rec.Name;
   &type := ErrorTypes[Ord(id)];
 end;
@@ -187,7 +187,7 @@ constructor TRecordError.Create(rec: IwbMainRecord; element: IwbElement;
   error: string);
 begin
   signature := rec.signature;
-  formID := IntToHex(rec.GetLoadOrderFormID, 8);
+  formID := rec.FixedFormID;
   name := rec.Name;
   path := element.Path;
   ParseError(error, &type, data);

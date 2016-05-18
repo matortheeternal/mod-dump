@@ -343,7 +343,7 @@ begin
     childObj := SO;
     childObj.I['type'] := Ord(error.&type.id);
     childObj.S['signature'] := string(error.signature);
-    childObj.S['form_id'] := error.formID;
+    childObj.I['form_id'] := error.formID;
     childObj.S['name'] := error.name;
     if error.path <> '' then
       childObj.S['path'] := error.path;
