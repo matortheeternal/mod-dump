@@ -24,7 +24,6 @@ type
   public
     [IniSection('General')]
     dummyPluginPath: string;
-    pluginSearchPath: string;
     dumpPath: string;
     language: string;
     bPrintHashes: boolean;
@@ -89,7 +88,6 @@ var
 begin
   // default settings
   dummyPluginPath := '{{gameName}}\EmptyPlugin.esp';
-  pluginSearchPath := '{{gameName}}\';
   dumpPath := '{{gameName}}\';
   language := 'English';
   bPrintHashes := false;
@@ -115,7 +113,6 @@ begin
     slMap.Values['abbrName'] := ProgramStatus.GameMode.abbrName;
 
     // apply template
-    pluginSearchPath := PathList.Values['ProgramPath'] + ApplyTemplate(pluginSearchPath, slMap);
     dummyPluginPath := PathList.Values['ProgramPath'] + ApplyTemplate(dummyPluginPath, slMap);
     dumpPath := PathList.Values['ProgramPath'] + ApplyTemplate(dumpPath, slMap);
 

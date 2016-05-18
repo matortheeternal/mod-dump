@@ -14,6 +14,7 @@ uses
   mdConfiguration, mdCore, mdMessages;
 
   function IsPlugin(filename: string): boolean;
+  function FindPlugin(var filePath: string): boolean;
   procedure DumpGroups;
   function DumpPlugin(filePath: string): ISuperObject;
   function DumpPluginsList(filePath: string): ISuperObject;
@@ -37,7 +38,7 @@ end;
 procedure DumpGroups;
 var
   i: Integer;
-  sig: string;
+  sig, path: string;
   RDE: PwbRecordDefEntry;
   RecordDef: PwbRecordDef;
   slSeeds: TStringList;
@@ -61,7 +62,9 @@ begin
     end;
 
     // save seeds
-    slSeeds.SaveToFile(wbGameName+'\seeds.rb');
+    path := settings.dumpPath + '\seeds.rb';
+    AddMessage('Saving seeds to: ' + path);
+    slSeeds.SaveToFile(path);
   finally
     slSeeds.Free;
   end;
@@ -76,7 +79,7 @@ begin
     filePath := wbDataPath + filePath;
   end
   else begin
-    filePath := settings.pluginSearchPath + filePath;
+    filePath := PathList.Values['ProgramPath'] + filePath;
     Result := FileExists(filePath);
   end;
 end;
@@ -130,7 +133,7 @@ begin
   for i := 0 to Pred(PluginsList.Count) do begin
     plugin := TPlugin(PluginsList[i]);
     if (plugin.hash = dummyPluginHash) then begin
-      sFilePath := settings.pluginSearchPath + plugin.filename;
+      sFilePath := PathList.Values['ProgramPath'] + plugin.filename;
       AddMessage('Deleting ' + sFilePath);
       DeleteFile(PChar(sFilePath));
     end;
@@ -202,7 +205,7 @@ begin
 
     // load hardcoded dat
     if i = 0 then try
-      aFile := wbFile(settings.pluginSearchPath + wbGameName + wbHardcodedDat, 0);
+      aFile := wbFile(PathList.Values['ProgramPath'] + wbGameName + wbHardcodedDat, 0);
       aFile._AddRef;
     except
       on x: Exception do begin
@@ -282,6 +285,7 @@ end;
 function JsonDump(plugin: TPlugin): ISuperObject;
 var
   obj, childObj: ISuperObject;
+  path: String;
   i, j: Integer;
   group: TRecordGroup;
   error: TRecordError;
@@ -353,7 +357,9 @@ begin
     sl := TStringList.Create;
     try
       sl.Text := obj.AsJSon;
-      sl.SaveToFile(settings.dumpPath + plugin.filename + '.json');
+      path := settings.dumpPath + plugin.filename + '.json';
+      AddMessage('Saving JSON dump to: ' + path);
+      sl.SaveToFile(path);
     finally
       sl.Free;
     end;

@@ -50,7 +50,7 @@ begin
 
   // get target file param
   TargetFile := ParamStr(1);
-  if not FileExists(TargetFile) then
+  if not FindPlugin(TargetFile) then
     raise Exception.Create('Target file not found');
 
   // raise exception if target file is not a plugin file or a text file
