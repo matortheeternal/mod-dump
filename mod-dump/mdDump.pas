@@ -298,9 +298,9 @@ begin
 
 
   // dump masters
-  obj.O['masters'] := SA([]);
+  obj.O['master_filenames'] := SA([]);
   for i := 0 to Pred(plugin.masters.Count) do
-    obj.A['masters'].S[i] := plugin.masters[i];
+    obj.A['master_filenames'].S[i] := plugin.masters[i];
 
   // dump dummy masters
   obj.O['dummy_masters'] := SA([]);
