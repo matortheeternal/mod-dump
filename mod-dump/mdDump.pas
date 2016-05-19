@@ -63,7 +63,7 @@ begin
 
     // save seeds
     path := settings.dumpPath + '\seeds.rb';
-    AddMessage('Saving seeds to: ' + path);
+    AddMessage(#13#10'Saving seeds to: ' + path);
     slSeeds.SaveToFile(path);
   finally
     slSeeds.Free;
@@ -360,7 +360,7 @@ begin
     try
       sl.Text := obj.AsJSon;
       path := settings.dumpPath + plugin.filename + '.json';
-      AddMessage('Saving JSON dump to: ' + path);
+      AddMessage(#13#10'Saving JSON dump to: ' + path);
       sl.SaveToFile(path);
     finally
       sl.Free;
@@ -392,8 +392,12 @@ begin
     plugin := PluginByFilename(sFileName);
     
     // build references for the plugin we're dumping
-    if (settings.bBuildReferences)
+    if (settings.bBuildReferences) then begin
+      AddMessage(' ');
+      AddMessage('== BUILDING REFERENCES ==');
+      AddMessage('Building references for '+plugin.filename);
       plugin._File.BuildRef;
+    end;
       
     // dump info on our plugin
     WriteDump(plugin);
