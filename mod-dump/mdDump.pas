@@ -387,9 +387,15 @@ begin
     // load plugins
     LoadPlugins(filePath, slLoadOrder);
 
-    // dump info on our plugin
+    // get the plugin we're going to dump
     sFileName := ExtractFilename(filePath);
     plugin := PluginByFilename(sFileName);
+    
+    // build references for the plugin we're dumping
+    if (settings.bBuildReferences)
+      plugin._File.BuildRef;
+      
+    // dump info on our plugin
     WriteDump(plugin);
     Result := JsonDump(plugin);
   finally
