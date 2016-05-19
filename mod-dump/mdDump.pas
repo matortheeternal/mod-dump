@@ -259,10 +259,12 @@ begin
     AddMessage(' No records');
 
   //Write overrides
-  AddMessage('Overrides');
-  for i := 0 to Pred(plugin.overrides.Count) do begin
-    AddMessage(Format('Sig: [%s]  FormID: %s',
-      [plugin.overrides[i], IntToHex(Integer(plugin.overrides.Objects[i]),8)]));
+  AddMessage('Overrides: '+IntToStr(plugin.overrides.Count));
+  if plugin.overrides.Count < 100 then begin
+    for i := 0 to Pred(plugin.overrides.Count) do begin
+      AddMessage(Format('Sig: [%s]  FormID: %s',
+        [plugin.overrides[i], IntToHex(Integer(plugin.overrides.Objects[i]),8)]));
+    end;
   end;
 
   // write errors
