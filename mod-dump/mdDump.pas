@@ -273,10 +273,10 @@ begin
     error := TRecordError(plugin.errors[i]);
     if error.path <> '' then
       AddMessage(Format(' [%s:%s] %s at %s', [string(error.signature),
-        error.formID, error.&type.shortName, error.path]))
+        IntToHex(error.formID, 8), error.&type.shortName, error.path]))
     else
       AddMessage(Format(' [%s:%s] %s', [string(error.signature),
-        error.formID, error.&type.shortName]))
+        IntToHex(error.formID, 8), error.&type.shortName]))
   end;
   if ProgramStatus.bUsedDummyPlugins then
     AddMessage(' Unknown')
