@@ -343,7 +343,7 @@ begin
   for i := 0 to Pred(plugin.errors.Count) do begin
     error := TRecordError(plugin.errors[i]);
     childObj := SO;
-    childObj.I['type'] := Ord(error.&type.id);
+    childObj.I['group'] := Ord(error.&type.id);
     childObj.S['signature'] := string(error.signature);
     childObj.I['form_id'] := error.formID;
     childObj.S['name'] := error.name;
