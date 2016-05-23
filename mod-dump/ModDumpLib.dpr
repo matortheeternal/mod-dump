@@ -44,6 +44,7 @@ procedure SetGameMode(mode: Integer); stdcall;
 begin
   SetGame(mode);
   AddMessage('Game: ' + ProgramStatus.GameMode.longName);
+  AddMessage('DataPath: ' + settings.gameDataPath);
   AddMessage(' ');
 end;
 

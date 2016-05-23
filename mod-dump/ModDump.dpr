@@ -40,6 +40,7 @@ begin
   if not SetGameParam(TargetGame) then
     raise Exception.Create(Format('Invalid GameMode "%s"', [TargetGame]));
   AddMessage('Game: ' + ProgramStatus.GameMode.longName);
+  AddMessage('DataPath: ' + settings.gameDataPath);
   AddMessage(' ');
 
   // dump record groups
@@ -50,6 +51,7 @@ begin
 
   // get target file param
   TargetFile := ParamStr(1);
+  AddMessage('Target File: ' + TargetFile);
   if not FindPlugin(TargetFile) then
     raise Exception.Create('Target file not found');
 
