@@ -224,7 +224,6 @@ procedure LoadResources(var sl: TStringList);
 var
   slBSAFileNames, slErrors: TStringList;
   i, j: Integer;
-  plugin: TPlugin;
   bIsTES5: Boolean;
 begin
   // print log messages

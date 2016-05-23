@@ -50,6 +50,7 @@ type
 
   procedure SetGame(id: integer);
   function GetGamePath(mode: TGameMode): string;
+  function SetGameAbbr(abbrName: string): boolean;
   function SetGameParam(param: string): boolean;
   procedure LoadSettings;
   procedure SaveSettings;
@@ -241,19 +242,26 @@ begin
     Result := IncludeTrailingPathDelimiter(Result);
 end;
 
+function SetGameAbbr(abbrName: String): boolean;
+var
+  i: Integer;
+begin
+  Result := false;
+  for i := Low(GameArray) to High(GameArray) do
+    if SameText(GameArray[i].abbrName, abbrName) then begin
+      SetGame(i);
+      Result := true;
+      exit;
+    end;
+end;
+
 function SetGameParam(param: string): boolean;
 var
   abbrName: string;
   i: Integer;
 begin
-  Result := false;
   abbrName := Copy(param, 2, Length(param));
-  for i := Low(GameArray) to High(GameArray) do
-    if GameArray[i].abbrName = abbrName then begin
-      SetGame(i);
-      Result := true;
-      exit;
-    end;
+  Result := SetGameAbbr(abbrName);
 end;
 
 procedure LoadSettings;
