@@ -19,7 +19,7 @@ var
 begin
   StartModDump;
   SetGameMode(1);
-  Prepare('Skyrim\iHUD.esp');
+  Prepare('iHUD.esp');
   Dump(json, 4 * 1024 * 1024);
   GetBuffer(msg, 4096);
   WriteLn(msg);

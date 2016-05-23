@@ -3,11 +3,11 @@ unit mdConfiguration;
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes, ShlObj,
   // mte units
   mteHelpers, CRC32, RttiIni,
   // xedit units
-  wbInterface, wbDefinitionsFO4, wbDefinitionsTES5, wbDefinitionsTES4,
+  wbInterface, wbBSA, wbDefinitionsFO4, wbDefinitionsTES5, wbDefinitionsTES4,
   wbDefinitionsFNV, wbDefinitionsFO3;
 
 type
@@ -151,6 +151,8 @@ end;
 
 { Sets the game mode in the TES5Edit API }
 procedure SetGame(id: integer);
+var
+  sMyDocumentsPath, sIniPath: String;
 begin
   // update our vars
   ProgramStatus.GameMode := GameArray[id];
@@ -173,6 +175,19 @@ begin
   wbLanguage := settings.language;
   wbEditAllowed := True;
   wbLoaderDone := True;
+  wbContainerHandler := wbCreateContainerHandler;
+  wbContainerHandler._AddRef;
+
+  // find game ini inside the user's documents folder.
+  sMyDocumentsPath := GetCSIDLShellFolder(CSIDL_PERSONAL);
+  if sMyDocumentsPath <> '' then begin
+    sIniPath := sMyDocumentsPath + 'My Games\' + wbGameName + '\';
+
+    if wbGameMode in [gmFO3, gmFNV] then
+      wbTheGameIniFileName := sIniPath + 'Fallout.ini'
+    else
+      wbTheGameIniFileName := sIniPath + wbGameName + '.ini';
+  end;
 
   // load definitions
   case wbGameMode of

@@ -6,12 +6,12 @@ uses
   SysUtils, Classes, Windows,
   // third party libraries
   superobject,
-  // xedit units
-  wbInterface, wbImplementation,
   // mte units
   mteHelpers, mteBase,
   // md units
-  mdConfiguration, mdCore, mdMessages;
+  mdConfiguration, mdCore, mdMessages,
+  // xedit units
+  wbInterface, wbImplementation, wbHelpers;
 
   function IsPlugin(filename: string): boolean;
   function FindPlugin(var filePath: string): boolean;
@@ -220,6 +220,59 @@ begin
   end;
 end;
 
+procedure LoadResources;
+var
+  slBSAFileNames, slErrors: TStringList;
+  i, j: Integer;
+  plugin: TPlugin;
+  bIsTES5: Boolean;
+begin
+  // print log messages
+  AddMessage(' ');
+  AddMessage('== LOADING RESOURCES ==');
+  // load resources from the DataPath
+  wbContainerHandler.AddFolder(wbDataPath);
+
+  // load BSAs
+  slBSAFileNames := TStringList.Create;
+  try
+    slErrors:= TStringList.Create;
+    try
+      // find and load any BSAs we can find on the data path
+      FindBSAs(wbTheGameIniFileName, wbDataPath, slBSAFileNames, slErrors);
+      for i := 0 to slBSAFileNames.Count - 1 do begin
+        AddMessage('Loading resources from ' + slBSAFileNames[i]);
+        wbContainerHandler.AddBSA(wbDataPath + slBSAFileNames[i]);
+      end;
+      // print errors
+      for i := 0 to slErrors.Count - 1 do
+        AddMessage(slErrors[i] + ' was not found');
+
+      // load any BSAs based on plugin filenames that were missed
+      for j := 0 to PluginsList.Count - 1 do begin
+        slBSAFileNames.Clear;
+        slErrors.Clear;
+        plugin := TPlugin(PluginsList[j]);
+        bIsTES5 := wbGameMode = gmTES5;
+
+        HasBSAs(ChangeFileExt(plugin.filename, ''),
+          wbDataPath, bIsTES5, bIsTES5, slBSAFileNames, slErrors);
+        for i := 0 to slBSAFileNames.Count - 1 do begin
+          AddMessage('Loading resources from ' + slBSAFileNames[i]);
+          wbContainerHandler.AddBSA(wbDataPath + slBSAFileNames[i]);
+        end;
+        // print errors
+        for i := 0 to slErrors.Count - 1 do
+          AddMessage(slErrors[i] + ' was not found');
+      end;
+    finally
+      slErrors.Free;
+    end;
+  finally
+    slBSAFileNames.Free;
+  end;
+end;
+
 procedure WriteList(name: string; var sl: TStringList);
 var
   i: Integer;
@@ -392,8 +445,9 @@ begin
     wbFileForceClosed;
     PrintLoadOrder(slLoadOrder);
 
-    // load plugins
+    // load plugins and resources
     LoadPlugins(filePath, slLoadOrder);
+    LoadResources;
 
     // get the plugin we're going to dump
     sFileName := ExtractFilename(filePath);
