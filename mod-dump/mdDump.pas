@@ -308,16 +308,20 @@ begin
 
 
   // dump masters
-  obj.O['master_filenames'] := SA([]);
-  for i := 0 to Pred(plugin.masters.Count) do
-    obj.A['master_filenames'].S[i] := plugin.masters[i];
+  obj.O['master_plugins'] := SA([]);
+  for i := 0 to Pred(plugin.masters.Count) do begin
+    childObj := SO;
+    childObj.S['filename'] := plugin.masters[i];
+    childObj.S['crc_hash'] := PluginByFilename(plugin.masters[i]).hash;
+    obj.A['master_plugins'].O[i] := childObj;
+  end;
 
   // dump dummy masters
-  obj.O['dummy_masters'] := SA([]);
+  obj.O['dummy_master_filenames'] := SA([]);
   j := 0;
   for i := 0 to Pred(plugin.masters.Count) do begin
     if PluginByFilename(plugin.masters[i]).hash = dummyPluginHash then begin
-      obj.A['dummy_masters'].S[j] := plugin.masters[i];
+      obj.A['dummy_master_filenames'].S[j] := plugin.masters[i];
       Inc(j);
     end;
   end;
