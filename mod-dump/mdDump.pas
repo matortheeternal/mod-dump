@@ -220,7 +220,7 @@ begin
   end;
 end;
 
-procedure LoadResources;
+procedure LoadResources(var sl: TStringList);
 var
   slBSAFileNames, slErrors: TStringList;
   i, j: Integer;
@@ -240,7 +240,7 @@ begin
     try
       // find and load any BSAs we can find on the data path
       FindBSAs(wbTheGameIniFileName, wbDataPath, slBSAFileNames, slErrors);
-      for i := 0 to slBSAFileNames.Count - 1 do begin
+      for i := 0 to Pred(slBSAFileNames.Count) do begin
         AddMessage('Loading resources from ' + slBSAFileNames[i]);
         wbContainerHandler.AddBSA(wbDataPath + slBSAFileNames[i]);
       end;
@@ -249,13 +249,12 @@ begin
         AddMessage(slErrors[i] + ' was not found');
 
       // load any BSAs based on plugin filenames that were missed
-      for j := 0 to PluginsList.Count - 1 do begin
+      bIsTES5 := wbGameMode = gmTES5;
+      for j := 0 to Pred(sl.Count) do begin
         slBSAFileNames.Clear;
         slErrors.Clear;
-        plugin := TPlugin(PluginsList[j]);
-        bIsTES5 := wbGameMode = gmTES5;
 
-        HasBSAs(ChangeFileExt(plugin.filename, ''),
+        HasBSAs(ChangeFileExt(sl[j], ''),
           wbDataPath, bIsTES5, bIsTES5, slBSAFileNames, slErrors);
         for i := 0 to slBSAFileNames.Count - 1 do begin
           AddMessage('Loading resources from ' + slBSAFileNames[i]);
@@ -446,8 +445,8 @@ begin
     PrintLoadOrder(slLoadOrder);
 
     // load plugins and resources
+    LoadResources(slLoadOrder);
     LoadPlugins(filePath, slLoadOrder);
-    LoadResources;
 
     // get the plugin we're going to dump
     sFileName := ExtractFilename(filePath);
