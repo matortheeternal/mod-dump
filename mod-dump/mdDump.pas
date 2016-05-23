@@ -100,8 +100,12 @@ var
 begin
   filePath := filename;
   // create empty plugin if plugin doesn't exist
-  if not FindPlugin(filePath) then
-    CreateDummyPlugin(filePath);
+  if not FindPlugin(filePath) then begin
+    if settings.bAllowDummies then
+      CreateDummyPlugin(filePath)
+    else
+      raise Exception.Create('Missing master plugin '+filename);
+  end;
 
   // load the file and recurse through its masters
   aFile := wbFile(filePath, -1, '', True, False);
@@ -404,7 +408,8 @@ begin
     Result := JsonDump(plugin);
   finally
     wbFileForceClosed;
-    DeleteDummyPlugins;
+    if ProgramStatus.bUsedDummyPlugins then
+      DeleteDummyPlugins;
     slLoadOrder.Free;
   end;
 end;

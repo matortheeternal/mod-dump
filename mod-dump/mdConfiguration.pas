@@ -29,6 +29,7 @@ type
     bPrintHashes: boolean;
     bSaveToDisk: boolean;
     bBuildReferences: boolean;
+    bAllowDummies: boolean;
     [IniSection('Games')]
     skyrimPath: string;
     oblivionPath: string;
@@ -94,6 +95,7 @@ begin
   bPrintHashes := false;
   bSaveToDisk := false;
   bBuildReferences := true;
+  bAllowDummies := false;
   // game paths
   skyrimPath := GetGamePath(GameArray[1]) + 'data\';
   oblivionPath := GetGamePath(GameArray[2]) + 'data\';
