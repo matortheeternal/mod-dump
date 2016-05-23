@@ -75,8 +75,8 @@ begin
   if FileExists(filePath) then
     Result := true
   else if FileExists(wbDataPath + filePath) then begin
-    Result := true;
     filePath := wbDataPath + filePath;
+    Result := true;
   end
   else begin
     filePath := PathList.Values['ProgramPath'] + filePath;
@@ -119,7 +119,7 @@ begin
     end;
 
     // add file to load order
-    sl.Add(filename);
+    sl.Add(filePath);
   finally
     slMasters.Free;
   end;
@@ -174,7 +174,6 @@ begin
   // load the plugins
   for i := 0 to Pred(sl.Count) do begin
     sFilePath := sl[i];
-    FindPlugin(sFilePath);
 
     // print log message
     sFilename := ExtractFilename(sFilePath);
@@ -182,12 +181,11 @@ begin
     AddMessage('['+sFilePath+']');
 
     // load plugin
-    SetCurrentDir(wbDataPath);
     try
       plugin := TPlugin.Create;
-      plugin.filepath := wbDataPath + sFileName;
+      plugin.filepath := sFilePath;
       plugin.filename := sFilename;
-      plugin._File := wbFile(sFilename, i, '', false, false);
+      plugin._File := wbFile(sFilePath, i, '', false, false);
       plugin._File._AddRef;
       bIsDumpFile := sFilePath = dumpFilePath;
       plugin.GetMdData(bIsDumpFile);
