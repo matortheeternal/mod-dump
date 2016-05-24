@@ -864,6 +864,7 @@ type
     mrOverridesSorted  : Boolean;
     mrEditorID         : string;
     mrFullName         : string;
+    mrSubrecordErrors  : string;
     mrStates           : TwbMainRecordStates;
     mrBaseRecordID     : Cardinal;
     mrConflictAll      : TConflictAll;
@@ -885,6 +886,7 @@ type
     procedure ElementChanged(const aElement: IwbElement; aContainer: Pointer); override;
     function RemoveElement(aPos: Integer; aMarkModified: Boolean = False): IwbElement; overload; override;
     function ResolveElementName(aName: string; out aRemainingName: string; aCanCreate: Boolean = False): IwbElement; override;
+    procedure SubrecordError(sig: string);
 
     function GetIsInjected: Boolean; override;
     function GetReferencesInjected: Boolean; override;
@@ -974,6 +976,7 @@ type
     function GetReferencedBy(aIndex: Integer): IwbMainRecord;
     function GetReferencedByCount: Integer;
     function GetCheck: string; override;
+    function GetSubrecordErrors: string;
     function GetIsWinningOverride: Boolean;
     function GetWinningOverride: IwbMainRecord;
     function GetHighestOverrideOrSelf(aMaxLoadOrder: Integer): IwbMainRecord;
@@ -6030,7 +6033,8 @@ begin
     Exit;
 
   DecompressIfNeeded;
-
+  
+  mrSubrecordErrors := '';
   FoundError := False;
 
   if not (mrsQuickInit in mrStates) then begin
@@ -6088,6 +6092,7 @@ begin
     if mrDef.AllowUnordered then begin
       CurrentDefPos := mrDef.GetMemberIndexFor(CurrentRec.Signature, CurrentRec);
       if CurrentDefPos < 0 then begin
+        SubrecordError(String(CurrentRec.Signature));
         if Assigned(wbProgressCallback) then
           wbProgressCallback('Error: record '+ String(GetSignature) + ' contains unexpected (or out of order) subrecord ' + String(CurrentRec.Signature) + ' ' + IntToHex(Int64(Cardinal(CurrentRec.Signature)), 8) );
         FoundError := True;
@@ -6097,6 +6102,7 @@ begin
       CurrentDef := mrDef.Members[CurrentDefPos];
     end else begin
       if not mrDef.ContainsMemberFor(CurrentRec.Signature, CurrentRec) then begin
+        SubrecordError(String(CurrentRec.Signature));
         if Assigned(wbProgressCallback) then
           wbProgressCallback('Error: record '+ String(GetSignature) + ' contains unexpected (or out of order) subrecord ' + String(CurrentRec.Signature) + ' ' + IntToHex(Int64(Cardinal(CurrentRec.Signature)), 8) );
         FoundError := True;
@@ -6111,6 +6117,7 @@ begin
           Continue;
         end;
       end else begin
+        SubrecordError(String(CurrentRec.Signature));
         if Assigned(wbProgressCallback) then
           wbProgressCallback('Error: record '+ String(GetSignature) + ' contains unexpected (or out of order) subrecord ' + String(CurrentRec.Signature) );
         FoundError := True;
@@ -6189,6 +6196,7 @@ begin
       Continue;
     end;
 
+    SubrecordError(String(CurrentRec.Signature));
     if Assigned(wbProgressCallback) then
       wbProgressCallback('Error: record '+ String(GetSignature) + ' contains unexpected (or out of order) subrecord ' + String(CurrentRec.Signature) );
     FoundError := True;
@@ -6473,6 +6481,19 @@ begin
       end;
     SetLength(Result, Length(Result) - 2);
   end;
+end;
+
+function TwbMainRecord.GetSubrecordErrors: String;
+begin
+  Result := mrSubrecordErrors;
+end;
+
+procedure TwbMainRecord.SubrecordError(sig: String);
+begin
+  if mrSubrecordErrors = '' then
+    mrSubrecordErrors := sig
+  else
+    mrSubrecordErrors := mrSubrecordErrors + ',' + sig;
 end;
 
 function TwbMainRecord.GetChildGroup: IwbGroupRecord;
