@@ -95,7 +95,7 @@ begin
   language := 'English';
   bPrintHashes := false;
   bSaveToDisk := false;
-  bBuildReferences := true;
+  bBuildReferences := false;
   bAllowDummies := false;
   // game paths
   skyrimPath := GetGamePath(GameArray[1]) + 'data\';
