@@ -28,7 +28,6 @@ type
     language: string;
     bPrintHashes: boolean;
     bSaveToDisk: boolean;
-    bBuildReferences: boolean;
     bAllowDummies: boolean;
     [IniSection('Games')]
     skyrimPath: string;
@@ -95,7 +94,6 @@ begin
   language := 'English';
   bPrintHashes := false;
   bSaveToDisk := false;
-  bBuildReferences := false;
   bAllowDummies := false;
   // game paths
   skyrimPath := GetGamePath(GameArray[1]) + 'data\';

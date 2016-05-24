@@ -449,14 +449,6 @@ begin
     // get the plugin we're going to dump
     sFileName := ExtractFilename(filePath);
     plugin := PluginByFilename(sFileName);
-    
-    // build references for the plugin we're dumping
-    if (settings.bBuildReferences) then begin
-      AddMessage(' ');
-      AddMessage('== BUILDING REFERENCES ==');
-      AddMessage('Building references for '+plugin.filename);
-      plugin._File.BuildRef;
-    end;
       
     // dump info on our plugin
     WriteDump(plugin);
