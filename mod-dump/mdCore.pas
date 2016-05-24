@@ -26,6 +26,8 @@ type
     path: string;
     data: string;
     constructor Create(rec: IwbMainRecord; id: TErrorTypeID); overload;
+    constructor Create(rec: IwbMainRecord; id: TErrorTypeID;
+      error: string); overload;
     constructor Create(rec: IwbMainRecord; element: IwbElement;
       error: string); overload;
   end;
@@ -102,6 +104,28 @@ begin
   if Supports(aElement, IwbContainerElementRef, container) then
     for i := Pred(container.ElementCount) downto 0 do
       Result := DumpErrors(Container.Elements[i], errors);
+end;
+
+procedure DumpSubrecordErrors(_File: IwbFile; var errors: TList);
+var
+  error: string;
+  i: Integer;
+  rec: IwbMainRecord;
+  errorObj: TRecordError;
+begin
+  // loop through records in file
+  for i := 0 to Pred(_File.RecordCount) do begin
+    rec := _File.Records[i];
+
+    // check record for out of order subrecords
+    Error := rec.GetSubrecordErrors;
+
+    if Error <> '' then begin
+      errorObj := TRecordError.Create(rec, erUES, Error);
+      errorObj.Data := Error;
+      errors.Add(errorObj);
+    end;
+  end;
 end;
 
 procedure DumpIdenticalErrors(_File: IwbFile; var errors: TList);
@@ -183,6 +207,16 @@ begin
   &type := ErrorTypes[Ord(id)];
 end;
 
+constructor TRecordError.Create(rec: IwbMainRecord; id: TErrorTypeID;
+  error: string);
+begin
+  signature := rec.signature;
+  formID := rec.FixedFormID;
+  name := rec.Name;
+  &type := ErrorTypes[Ord(id)];
+  data := error;
+end;
+
 constructor TRecordError.Create(rec: IwbMainRecord; element: IwbElement;
   error: string);
 begin
@@ -241,6 +275,7 @@ begin
 
   // dump errors
   DumpErrors(_File as IwbElement, errors);
+  DumpSubrecordErrors(_File, errors);
   DumpIdenticalErrors(_File, errors);
 end;
 
