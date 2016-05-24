@@ -119,7 +119,7 @@ begin
     end;
 
     // add file to load order
-    sl.Add(filePath);
+    sl.Add(filename);
   finally
     slMasters.Free;
   end;
@@ -174,6 +174,7 @@ begin
   // load the plugins
   for i := 0 to Pred(sl.Count) do begin
     sFilePath := sl[i];
+    FindPlugin(sFilePath);
 
     // print log message
     sFilename := ExtractFilename(sFilePath);
