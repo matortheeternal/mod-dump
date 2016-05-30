@@ -5,9 +5,9 @@ A program to produce compatibility dumps on bethesda plugins built on top of the
 
 ### stdin
 
-You can run ModDump.exe through Mod Organizer, or (if you don't use Mod Organizer) on its own without any target line parameters.  You will then be prompted to choose a game mode and a plugin to dump.  Upon making a valid selection Mod Dump will perform the dump.
+You can run ModDump.exe through Mod Organizer, or (if you don't use Mod Organizer) on its own, without any target line parameters.  You will then be prompted to choose a game mode and a plugin to dump.  Upon making a valid selection Mod Dump will perform the dump.
 
-NOTE: If you run ModDump.exe directly it will close immediately after the dump finishes executing.  This may be undesireable, so I recommend either running it from the command line (by opening a command in the same directory as ModDump.exe and entering `ModDump.exe`) or using a batch script:
+NOTE: If you run ModDump.exe directly it will close immediately after the dump finishes executing.  This may be undesireable, so I recommend either running it from the command line (by opening a command prompt in the same directory as ModDump.exe and entering `ModDump.exe`) or using a batch script:
 
 ```
 @echo off
@@ -20,7 +20,7 @@ pause
 
 `ModDump.exe "file path" -game`
 
-- file path: a relative or absolute path to a .esp or .esm file.  You can also use a text document list of paths.
+- file path: a relative or absolute path to an esp or esm file.  You can also use a text document list of paths.
 - game
   - fo4: Fallout 4
   - sk: Skyrim
@@ -30,7 +30,7 @@ pause
   
 ### settings
 
-The program settings will be stored in settings.ini alongisde the executable.  The dummyPluginPath and dumpPath settings will use substitution in the form of `{{var}}` for the following variables:
+The program settings will be stored in settings.ini alongsede the executable.  The dummyPluginPath and dumpPath settings will use substitution in the form of `{{var}}` for the following variables:
 
 - gameName: `Skyrim`, `Oblivion`, `FalloutNV`, `Fallout3`, or `Fallout4`
 - longName: `Skyrim`, `Oblivion`, `Fallout New Vegas`, `Fallout 3`, or `Fallout 4`
@@ -87,8 +87,8 @@ The program settings will be stored in settings.ini alongisde the executable.  T
   - UERs - Unexpected References
 - Record groups
   - Group signature
-  - New records
-  - Override records
+  - Record Count
+  - Override Record Count
 
 ### json format
 
