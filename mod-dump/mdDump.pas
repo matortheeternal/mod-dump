@@ -200,7 +200,7 @@ begin
         ProgramStatus.bUsedDummyPlugins := true;
     except
       on x: Exception do begin
-        AddMessage('Exception loading ' + sl[i]);
+        AddMessage('Exception loading ' + sFilePath);
         AddMessage(x.Message);
         raise x;
       end;
@@ -223,6 +223,7 @@ procedure LoadResources(var sl: TStringList);
 var
   slBSAFileNames, slErrors: TStringList;
   i, j: Integer;
+  filename: String;
   bIsTES5: Boolean;
 begin
   // print log messages
@@ -252,7 +253,8 @@ begin
         slBSAFileNames.Clear;
         slErrors.Clear;
 
-        HasBSAs(ChangeFileExt(sl[j], ''),
+        filename := ExtractFilename(sl[j]);
+        HasBSAs(ChangeFileExt(filename, ''),
           wbDataPath, bIsTES5, bIsTES5, slBSAFileNames, slErrors);
         for i := 0 to slBSAFileNames.Count - 1 do begin
           AddMessage('Loading resources from ' + slBSAFileNames[i]);
