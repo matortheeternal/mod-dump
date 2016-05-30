@@ -29,4 +29,14 @@ begin
   {$ENDIF}
 end;
 
+initialization
+begin
+  MessageBuffer := TStringList.Create;
+end;
+
+finalization
+begin
+  MessageBuffer.Free;
+end;
+
 end.
