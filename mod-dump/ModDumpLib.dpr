@@ -52,8 +52,14 @@ function Prepare(FilePath: PAnsiChar): WordBool; stdcall;
 begin
   TargetFile := String(AnsiString(FilePath));
   // get target file param
-  if not FileExists(TargetFile) then
-    raise Exception.Create('Target file not found');
+  if not FileExists(TargetFile) then begin
+    TargetFile := settings.GameDataPath + TargetFile;
+    if not FileExists(TargetFile) then begin
+      AddMessage('Target file not found.');
+      Result := false;
+      exit;
+    end;
+  end;
 
   // raise exception if target file is not a plugin file or a text file
   bIsPlugin := IsPlugin(TargetFile);
