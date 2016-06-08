@@ -62,19 +62,19 @@ var
 
 const
   // GAME MODES
-  GameArray: array[1..5] of TGameMode = (
-    ( longName: 'Skyrim'; gameName: 'Skyrim'; gameMode: gmTES5;
-      appName: 'TES5'; exeName: 'TESV.exe'; appIDs: '72850';
-      abbrName: 'sk'; ),
-    ( longName: 'Oblivion'; gameName: 'Oblivion'; gameMode: gmTES4;
-      appName: 'TES4'; exeName: 'Oblivion.exe'; appIDs: '22330,900883';
-      abbrName: 'ob'; ),
+  GameArray: array[0..4] of TGameMode = (
     ( longName: 'Fallout New Vegas'; gameName: 'FalloutNV'; gameMode: gmFNV;
       appName: 'FNV'; exeName: 'FalloutNV.exe'; appIDs: '22380,2028016';
       abbrName: 'fnv'; ),
     ( longName: 'Fallout 3'; gameName: 'Fallout3'; gameMode: gmFO3;
       appName: 'FO3'; exeName: 'Fallout3.exe'; appIDs: '22300,22370';
       abbrName: 'fo3'; ),
+    ( longName: 'Oblivion'; gameName: 'Oblivion'; gameMode: gmTES4;
+      appName: 'TES4'; exeName: 'Oblivion.exe'; appIDs: '22330,900883';
+      abbrName: 'ob'; ),
+    ( longName: 'Skyrim'; gameName: 'Skyrim'; gameMode: gmTES5;
+      appName: 'TES5'; exeName: 'TESV.exe'; appIDs: '72850';
+      abbrName: 'sk'; ),
     ( longName: 'Fallout 4'; gameName: 'Fallout4'; gameMode: gmFO4;
       appName: 'FO4'; exeName: 'Fallout4.exe'; appIDs: '377160';
       abbrName: 'fo4'; )
@@ -96,11 +96,11 @@ begin
   bSaveToDisk := false;
   bAllowDummies := false;
   // game paths
-  skyrimPath := GetGamePath(GameArray[1]) + 'data\';
-  oblivionPath := GetGamePath(GameArray[2]) + 'data\';
-  falloutNVPath := GetGamePath(GameArray[3]) + 'data\';
-  fallout3Path := GetGamePath(GameArray[4]) + 'data\';
-  fallout4Path := GetGamePath(GameArray[5]) + 'data\';
+  skyrimPath := GetGamePath(GameArray[0]) + 'data\';
+  oblivionPath := GetGamePath(GameArray[1]) + 'data\';
+  falloutNVPath := GetGamePath(GameArray[2]) + 'data\';
+  fallout3Path := GetGamePath(GameArray[3]) + 'data\';
+  fallout4Path := GetGamePath(GameArray[4]) + 'data\';
 end;
 
 procedure TSettings.UpdateForGame;
