@@ -97,7 +97,7 @@ begin
     Result := true;
   except
     on E: Exception do begin
-      AddMessage(E.ClassName + ': ' + E.Message);
+      AddMessage(E.Message);
       SaveBuffer;
     end;
   end;
