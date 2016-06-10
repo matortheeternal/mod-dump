@@ -96,10 +96,10 @@ begin
   bSaveToDisk := false;
   bAllowDummies := false;
   // game paths
-  skyrimPath := GetGamePath(GameArray[0]) + 'data\';
-  oblivionPath := GetGamePath(GameArray[1]) + 'data\';
-  falloutNVPath := GetGamePath(GameArray[2]) + 'data\';
-  fallout3Path := GetGamePath(GameArray[3]) + 'data\';
+  falloutNVPath := GetGamePath(GameArray[0]) + 'data\';
+  fallout3Path := GetGamePath(GameArray[1]) + 'data\';
+  oblivionPath := GetGamePath(GameArray[2]) + 'data\';
+  skyrimPath := GetGamePath(GameArray[3]) + 'data\';
   fallout4Path := GetGamePath(GameArray[4]) + 'data\';
 end;
 
