@@ -26,10 +26,6 @@ uses
 const
   IMAGE_FILE_LARGE_ADDRESS_AWARE = $0020;
 
-var
-  TargetFile: string;
-  bIsPlugin, bIsText: boolean;
-
 procedure GetBuffer(str: PAnsiChar; len: Integer); StdCall;
 begin
   StrLCopy(str, PAnsiChar(AnsiString(MessageBuffer.Text)), len);
