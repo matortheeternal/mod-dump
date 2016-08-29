@@ -18,7 +18,9 @@ uses
   mdConfiguration in 'mdConfiguration.pas',
   mdCore in 'mdCore.pas',
   mdDump in 'mdDump.pas',
-  mdMessages in 'mdMessages.pas';
+  mdMessages in 'mdMessages.pas',
+  mdThreads in 'mdThreads.pas',
+  mdShared in 'mdShared.pas';
 
 {$R *.res}
 {$MAXSTACKSIZE 2097152}
@@ -71,32 +73,29 @@ begin
   Result := bIsPlugin or bIsText;
 end;
 
-function Dump(str: PAnsiChar; len: Integer): WordBool; stdcall;
-var
-  obj: ISuperObject;
+function GetDumpResult(str: PAnsiChar; len: Integer): WordBool; stdcall;
 begin
   Result := false;
+  if Assigned(DumpResult) then begin
+    Result := true;
+    StrLCopy(str, PAnsiChar(AnsiString(DumpResult.AsJSON)), len);
+  end;
+end;
+
+function Dump: WordBool; stdcall;
+begin
+  Result := false;
+
+  // raise error if no plugin or list is loaded
   if not bIsPlugin or bIsText then begin
     AddMessage('ERROR: No plugin or list loaded.');
     exit;
   end;
 
-  try
-    // dump the plugin/pluginslist
-    if bIsPlugin then
-      obj := DumpPlugin(TargetFile)
-    else if bIsText then
-      obj := DumpPluginsList(TargetFile);
-
-    // return the json of the dump/s
-    StrLCopy(str, PAnsiChar(AnsiString(obj.AsJSON)), len);
-    Result := true;
-  except
-    on E: Exception do begin
-      AddMessage(E.Message);
-      SaveBuffer;
-    end;
-  end;
+  // start a thread for dumping
+  DumpResult := nil;
+  TDumpThread.Create;
+  Result := true;
 end;
 
 procedure StartModDump; stdcall;
@@ -120,7 +119,8 @@ exports
   FlushBuffer,
   SetGameMode,
   Prepare,
-  Dump;
+  Dump,
+  GetDumpResult;
 
 begin
   IsMultiThread := True;

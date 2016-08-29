@@ -60,6 +60,7 @@
 			<DCCReference Include="mdCore.pas"/>
 			<DCCReference Include="mdDump.pas"/>
 			<DCCReference Include="mdMessages.pas"/>
+			<DCCReference Include="mdThreads.pas"/>
 			<DCCReference Include="mdShared.pas"/>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
@@ -86,7 +87,7 @@
 						<VersionInfo Name="MajorVer">0</VersionInfo>
 						<VersionInfo Name="MinorVer">9</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">5</VersionInfo>
+						<VersionInfo Name="Build">6</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -98,7 +99,7 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName"/>
 						<VersionInfoKeys Name="FileDescription"/>
-						<VersionInfoKeys Name="FileVersion">0.9.0.5</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">0.9.0.6</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright"/>
 						<VersionInfoKeys Name="LegalTrademarks"/>
