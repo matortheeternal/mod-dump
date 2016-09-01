@@ -62,6 +62,21 @@
 			<DCCReference Include="mdMessages.pas"/>
 			<DCCReference Include="mdThreads.pas"/>
 			<DCCReference Include="mdShared.pas"/>
+			<DCCReference Include="..\lib\xedit\wbBSA.pas"/>
+			<DCCReference Include="..\lib\xedit\wbDefinitionsFNV.pas"/>
+			<DCCReference Include="..\lib\xedit\wbDefinitionsFO3.pas"/>
+			<DCCReference Include="..\lib\xedit\wbDefinitionsFO4.pas"/>
+			<DCCReference Include="..\lib\xedit\wbDefinitionsTES3.pas"/>
+			<DCCReference Include="..\lib\xedit\wbDefinitionsTES4.pas"/>
+			<DCCReference Include="..\lib\xedit\wbDefinitionsTES5.pas"/>
+			<DCCReference Include="..\lib\xedit\wbHelpers.pas"/>
+			<DCCReference Include="..\lib\xedit\wbImplementation.pas"/>
+			<DCCReference Include="..\lib\xedit\wbInit.pas"/>
+			<DCCReference Include="..\lib\xedit\wbInterface.pas"/>
+			<DCCReference Include="..\lib\xedit\wbLocalization.pas"/>
+			<DCCReference Include="..\lib\xedit\wbSort.pas"/>
+			<DCCReference Include="..\lib\xedit\wbStreams.pas"/>
+			<DCCReference Include="..\lib\xedit\Zlibex.pas"/>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>
