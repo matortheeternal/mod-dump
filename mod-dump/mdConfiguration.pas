@@ -281,6 +281,8 @@ end;
 
 finalization
 begin
+  if Assigned(settings) then settings.Free;
+  if Assigned(wbContainerHandler) then wbContainerHandler._Release;
   ProgramStatus.Free;
   PathList.Free;
 end;
