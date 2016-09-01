@@ -76,7 +76,7 @@ end;
 function GetDumpResult(str: PAnsiChar; len: Integer): WordBool; stdcall;
 begin
   Result := false;
-  if Assigned(DumpResult) then begin
+  if Assigned(DumpResult) and (DumpResult <> nil) then begin
     Result := true;
     StrLCopy(str, PAnsiChar(AnsiString(DumpResult.AsJSON)), len);
   end;
