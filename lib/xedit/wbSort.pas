@@ -938,41 +938,55 @@ procedure wbMergeSort(aList: Pointer; aCount: Integer; aCompare: TListSortCompar
   procedure UseStackBufferLarge;
   var
     Buffer: array[0..Pred(4 * 1024)] of Pointer;
+    SortedList: PwbPointerArray;
   begin
-    if wbMergeSortInternal(aList, @Buffer[0], aCount, aCompare) <> aList then
+    // we wrap wbMergeSortInternal in a try because access violations are
+    // no fun to track down
+    try
+      SortedList := wbMergeSortInternal(aList, @Buffer[0], aCount, aCompare);
+    except
+      on x: Exception do raise Exception.Create('wbMergeSortInternal: ' + x.Message);
+    end;
+    if SortedList <> aList then
       Move(Buffer, aList^, aCount * SizeOf(Pointer) );
   end;
 
   procedure UseStackBufferSmall;
   var
     Buffer: array[0..Pred(1024)] of Pointer;
+    SortedList: PwbPointerArray;
   begin
-    if wbMergeSortInternal(aList, @Buffer[0], aCount, aCompare) <> aList then
+    // we wrap wbMergeSortInternal in a try because access violations are
+    // no fun to track down
+    try
+      SortedList := wbMergeSortInternal(aList, @Buffer[0], aCount, aCompare);
+    except
+      on x: Exception do raise Exception.Create('wbMergeSortInternal: ' + x.Message);
+    end;
+    if SortedList <> aList then
       Move(Buffer, aList^, aCount * SizeOf(Pointer) );
   end;
 
 var
   Buffer: Pointer;
+  SortedList: PwbPointerArray;
 begin
   if (aCount < 2) or (not Assigned(aList)) then
     Exit;
 
   if aCount > 4 * 1024 then begin
     GetMem(Buffer, aCount * SizeOf(Pointer));
+
+    // we wrap wbMergeSortInternal in a try because access violations are
+    // no fun to track down
     try
-      if wbMergeSortInternal(aList, Buffer, aCount, aCompare) <> aList then try
-        Move(Buffer^, aList^, aCount * SizeOf(Pointer));
-      except
-        on x: Exception do raise Exception.Create('wbMergeSort - Move: ');
-      end;
+      SortedList := wbMergeSortInternal(aList, Buffer, aCount, aCompare);
     except
-      on x: Exception do begin
-        if Pos('wbMergeSort', x.Message) = 0 then
-          raise Exception.Create('wbMergeSort - wbMergeSortInternal: ')
-        else
-          raise x;
-      end;
+      on x: Exception do raise Exception.Create('wbMergeSortInternal: ' + x.Message);
     end;
+
+    if SortedList <> aList then
+      Move(Buffer^, aList^, aCount * SizeOf(Pointer));
     FreeMem(Buffer);
   end else if aCount > 1024 then
     UseStackBufferLarge
