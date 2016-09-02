@@ -25,9 +25,10 @@ begin
     else if bIsText then
       DumpResult := DumpPluginsList(TargetFile);
   except
-    on E: Exception do begin
+    on x: Exception do begin
       DumpResult := SO;
-      AddMessage(E.Message);
+      AddMessage('Exception Dumping ' + TargetFile);
+      AddMessage(x.Message);
       SaveBuffer;
     end;
   end;

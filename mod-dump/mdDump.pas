@@ -3,15 +3,8 @@ unit mdDump;
 interface
 
 uses
-  SysUtils, Classes, Windows,
   // third party libraries
-  superobject,
-  // mte units
-  mteHelpers, mteBase,
-  // md units
-  mdConfiguration, mdCore, mdMessages,
-  // xedit units
-  wbInterface, wbImplementation, wbHelpers;
+  superobject;
 
   function IsPlugin(filename: string): boolean;
   function FindPlugin(var filePath: string): boolean;
@@ -20,6 +13,15 @@ uses
   function DumpPluginsList(filePath: string): ISuperObject;
 
 implementation
+
+uses
+  SysUtils, Classes, Windows,
+  // mte units
+  mteHelpers, mteBase,
+  // md units
+  mdConfiguration, mdCore, mdMessages,
+  // xedit units
+  wbBSA, wbInterface, wbImplementation, wbHelpers;
 
 function IsPlugin(filename: string): boolean;
 begin
@@ -201,7 +203,7 @@ begin
     except
       on x: Exception do begin
         AddMessage('Exception loading ' + sFilePath);
-        AddMessage(x.Message);
+        AddMessage(x.ClassName + ' => ' + x.Message);
         raise x;
       end;
     end;
@@ -439,6 +441,10 @@ var
 begin
   slLoadOrder := TStringList.Create;
   try
+    // create new container handler
+    wbContainerHandler := wbCreateContainerHandler;
+    wbContainerHandler._AddRef;
+
     // build and print load order
     BuildLoadOrder(filePath, slLoadOrder, true);
     wbFileForceClosed;
@@ -456,6 +462,7 @@ begin
     WriteDump(plugin);
     Result := JsonDump(plugin);
   finally
+    wbContainerHandler := nil;
     wbFileForceClosed;
     if ProgramStatus.bUsedDummyPlugins then
       DeleteDummyPlugins;

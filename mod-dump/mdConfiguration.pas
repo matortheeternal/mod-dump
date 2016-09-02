@@ -42,6 +42,7 @@ type
   TProgramStatus = class(TObject)
   public
     bUsedDummyPlugins: boolean;
+    bGameAssigned: boolean;
     ProgramVersion: string;
     GameMode: TGameMode;
     constructor Create; virtual;
@@ -155,6 +156,7 @@ var
 begin
   // update our vars
   ProgramStatus.GameMode := GameArray[id];
+  ProgramStatus.bGameAssigned := true;
   LoadSettings;
   SaveSettings;
   settings.UpdateForGame;
@@ -174,8 +176,6 @@ begin
   wbLanguage := settings.language;
   wbEditAllowed := True;
   wbLoaderDone := True;
-  wbContainerHandler := wbCreateContainerHandler;
-  wbContainerHandler._AddRef;
 
   // find game ini inside the user's documents folder.
   sMyDocumentsPath := GetCSIDLShellFolder(CSIDL_PERSONAL);
