@@ -17,11 +17,12 @@ function GetDumpResult(str: PAnsiChar; len: Integer): WordBool; stdcall; externa
 
 procedure WriteBuffer;
 var
-  msg: PAnsiChar;
+  str: PAnsiChar;
 begin
-  GetBuffer(msg, 4096);
-  if Length(string(msg)) > 0 then begin
-    WriteLn(msg);
+  GetMem(str, 4096);
+  GetBuffer(str, 4096);
+  if Length(string(str)) > 0 then begin
+    WriteLn(str);
     FlushBuffer();
   end;
 end;
@@ -29,10 +30,13 @@ end;
 procedure DumpPlugin(filename: PAnsiChar);
 var
   json: PAnsiChar;
+  len: Integer;
 begin
   Prepare(filename);
   Dump();
-  while not GetDumpResult(json, 4 * 1024 * 1024) do begin
+  len := 4 * 1024 * 1024;
+  GetMem(json, len);
+  while not GetDumpResult(json, len) do begin
     WriteBuffer;
     Sleep(100);
   end;
