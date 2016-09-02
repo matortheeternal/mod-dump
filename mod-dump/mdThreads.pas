@@ -4,7 +4,8 @@ interface
 
 uses
   SysUtils, Classes,
-  SuperObject;
+  SuperObject,
+  wbInterface;
 
 type
   TDumpThread = class(TThread)
@@ -20,6 +21,7 @@ uses
 procedure TDumpThread.Execute;
 begin
   try
+    wbProgressCallback := AddMessage;
     if bIsPlugin then
       DumpResult := DumpPlugin(TargetFile)
     else if bIsText then
