@@ -21,7 +21,10 @@ uses
   mdDump in 'mdDump.pas',
   mdMessages in 'mdMessages.pas',
   mdThreads in 'mdThreads.pas',
-  mdShared in 'mdShared.pas';
+  mdShared in 'mdShared.pas',
+  wbImplementation in '..\lib\xedit\wbImplementation.pas',
+  wbInterface in '..\lib\xedit\wbInterface.pas',
+  wbSort in '..\lib\xedit\wbSort.pas';
 
 {$R *.res}
 {$MAXSTACKSIZE 2097152}
