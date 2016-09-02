@@ -18,7 +18,7 @@ unit wbSort;
 interface
 
 uses
-  Classes, wbInterface;
+  Classes, SysUtils, wbInterface;
 
 procedure wbMergeSort(aList: Pointer; aCount: Integer; aCompare: TListSortCompare);
 
@@ -959,8 +959,20 @@ begin
 
   if aCount > 4 * 1024 then begin
     GetMem(Buffer, aCount * SizeOf(Pointer));
-    if wbMergeSortInternal(aList, Buffer, aCount, aCompare) <> aList then
-      Move(Buffer^, aList^, aCount * SizeOf(Pointer));
+    try
+      if wbMergeSortInternal(aList, Buffer, aCount, aCompare) <> aList then try
+        Move(Buffer^, aList^, aCount * SizeOf(Pointer));
+      except
+        on x: Exception do raise Exception.Create('wbMergeSort - Move: ');
+      end;
+    except
+      on x: Exception do begin
+        if Pos('wbMergeSort', x.Message) = 0 then
+          raise Exception.Create('wbMergeSort - wbMergeSortInternal: ')
+        else
+          raise x;
+      end;
+    end;
     FreeMem(Buffer);
   end else if aCount > 1024 then
     UseStackBufferLarge
