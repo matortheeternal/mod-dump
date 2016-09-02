@@ -19,7 +19,7 @@ const
 {$SetPEFlags IMAGE_FILE_LARGE_ADDRESS_AWARE}
 
 var
-  TargetFile, TargetGame: string;
+  TargetFile, TargetGame, again: string;
   bIsPlugin, bIsText, bDumpGroups: boolean;
 
 { HELPER METHODS }
@@ -92,9 +92,10 @@ end;
 
 procedure ReadInput;
 var
-  bSuccess: boolean;
+  bGameAssigned, bSuccess: boolean;
 begin
-  repeat
+  bGameAssigned := ProgramStatus.bGameAssigned;
+  while not bGameAssigned do begin
     // get game abbr
     AddMessage(' ');
     AddMessage('Enter the game mode you want to use.');
@@ -103,10 +104,10 @@ begin
     ReadLn(TargetGame);
 
     // set game mode
-    bSuccess := SetGameAbbr(TargetGame);
-    if not bSuccess then
+    bGameAssigned := SetGameAbbr(TargetGame);
+    if not bGameAssigned then
       AddMessage(Format('Invalid GameMode "%s"', [TargetGame]));
-  until bSuccess;
+  end;
 
   // set game param
   AddMessage(' ');
@@ -158,22 +159,28 @@ begin
   try
     Welcome;
 
-    // load params or read input
-    if ParamCount > 1 then
-      LoadParams
-    else
-      ReadInput;
+    repeat
+      // load params or read input
+      if ParamCount > 1 then
+        LoadParams
+      else
+        ReadInput;
 
-    // determine mode
-    DetermineMode;
+      // determine mode
+      DetermineMode;
 
-    // do the dump
-    if bDumpGroups then
-      DumpGroups
-    else if bIsPlugin then
-      DumpPlugin(TargetFile)
-    else if bIsText then
-      DumpPluginsList(TargetFile);
+      // do the dump
+      if bDumpGroups then
+        DumpGroups
+      else if bIsPlugin then
+        DumpPlugin(TargetFile)
+      else if bIsText then
+        DumpPluginsList(TargetFile);
+
+      // repeat if user said yes
+      AddMessage('Dump another plugin? y/n ');
+      ReadLn(again);
+    until (not SameText(again, 'y'));
   except
     on E: Exception do
       AddMessage(E.ClassName + ': ' + E.Message);
