@@ -157,7 +157,7 @@ begin
     AddMessage(Format('[%s] %s', [IntToHex(i, 2), sl[i]]));
 end;
 
-procedure LoadPlugins(dumpFilePath: string; var sl: TStringList);
+procedure LoadPlugins(sDumpFileName: string; var sl: TStringList);
 var
   i: Integer;
   bIsDumpFile: boolean;
@@ -190,7 +190,7 @@ begin
       plugin.filename := sFilename;
       plugin._File := wbFile(sFilePath, i, '', false, false);
       plugin._File._AddRef;
-      bIsDumpFile := sFilePath = dumpFilePath;
+      bIsDumpFile := CompareText(sFilename, sDumpFileName) = 0;
       plugin.GetMdData(bIsDumpFile);
       PluginsList.Add(Pointer(plugin));
 
@@ -451,14 +451,12 @@ begin
     PrintLoadOrder(slLoadOrder);
 
     // load plugins and resources
-    LoadResources(slLoadOrder);
-    LoadPlugins(filePath, slLoadOrder);
-
-    // get the plugin we're going to dump
     sFileName := ExtractFilename(filePath);
-    plugin := PluginByFilename(sFileName);
-      
+    LoadResources(slLoadOrder);
+    LoadPlugins(sFileName, slLoadOrder);
+
     // dump info on our plugin
+    plugin := PluginByFilename(sFileName);
     WriteDump(plugin);
     Result := JsonDump(plugin);
   finally
