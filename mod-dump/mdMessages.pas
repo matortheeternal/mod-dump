@@ -5,7 +5,7 @@ interface
 uses
   Classes;
 
-  procedure AddMessage(msg: String);
+  procedure AddMessage(const msg: String);
   procedure SaveBuffer;
 
 var
@@ -13,8 +13,11 @@ var
 
 implementation
 
-procedure AddMessage(msg: String);
+procedure AddMessage(const msg: String);
 begin
+  if Length(msg) = 0 then
+    exit;
+
   {$IFDEF CONSOLE}
   WriteLn(msg);
   {$ELSE}
