@@ -29,6 +29,7 @@ type
     bPrintHashes: boolean;
     bSaveToDisk: boolean;
     bAllowDummies: boolean;
+    bVerboseLog: boolean;
     [IniSection('Games')]
     skyrimPath: string;
     oblivionPath: string;
@@ -96,6 +97,7 @@ begin
   bPrintHashes := false;
   bSaveToDisk := false;
   bAllowDummies := false;
+  bVerboseLog := false;
   // game paths
   falloutNVPath := GetGamePath(GameArray[0]) + 'data\';
   fallout3Path := GetGamePath(GameArray[1]) + 'data\';

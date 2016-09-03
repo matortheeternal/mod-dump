@@ -15,11 +15,16 @@ type
 implementation
 
 uses
-  mdShared, mdDump, mdMessages;
+  // xedit units
+  wbInterface,
+  // mod dump units
+  mdShared, mdConfiguration, mdDump, mdMessages;
 
 procedure TDumpThread.Execute;
 begin
   try
+    if settings.bVerboseLog then
+      wbProgressCallback := AddMessage;
     if bIsPlugin then
       DumpResult := DumpPlugin(TargetFile)
     else if bIsText then
