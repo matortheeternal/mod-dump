@@ -102,21 +102,14 @@ end;
 
 procedure StartModDump; stdcall;
 begin
-  MessageBuffer := TStringList.Create;
   AddMessage('ModDump v' + ProgramStatus.ProgramVersion);
 
   // get program path
   PathList.Values['ProgramPath'] := ExtractFilePath(ParamStr(0));
 end;
 
-procedure EndModDump; stdcall;
-begin
-  MessageBuffer.Free;
-end;
-
 exports
   StartModDump,
-  EndModDump,
   GetBuffer,
   FlushBuffer,
   SetGameMode,
