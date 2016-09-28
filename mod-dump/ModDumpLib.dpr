@@ -81,6 +81,7 @@ begin
   if Assigned(DumpResult) and (DumpResult <> nil) then begin
     Result := true;
     StrLCopy(str, PAnsiChar(AnsiString(DumpResult.AsJSON)), len);
+    DumpResult := nil;
   end;
 end;
 
