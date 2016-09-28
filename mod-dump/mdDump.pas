@@ -441,6 +441,10 @@ var
 begin
   slLoadOrder := TStringList.Create;
   try
+    // set progress callback if using verbose logging
+    if settings.bVerboseLog then
+      wbProgressCallback := AddMessage;
+
     // create new container handler
     wbContainerHandler := wbCreateContainerHandler;
     wbContainerHandler._AddRef;
@@ -461,6 +465,7 @@ begin
     Result := JsonDump(plugin);
   finally
     wbContainerHandler := nil;
+    wbProgressCallback := nil;
     wbFileForceClosed;
     if ProgramStatus.bUsedDummyPlugins then
       DeleteDummyPlugins;
