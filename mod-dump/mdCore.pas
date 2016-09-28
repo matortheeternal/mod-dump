@@ -52,6 +52,7 @@ type
   end;
 
   function PluginByFilename(sFilename: string): TPlugin;
+  procedure FreePlugins;
 
 const
   ErrorTypes: array[0..6] of TErrorType = (
@@ -245,8 +246,14 @@ begin
 end;
 
 destructor TPlugin.Destroy;
+var
+  i: Integer;
 begin
   overrides.Free;
+  for i := 0 to Pred(errors.Count) do
+    TRecordError(errors[i]).Destroy;
+  for i := 0 to Pred(groups.Count) do
+    TRecordGroup(groups[i]).Destroy;
   errors.Free;
   groups.Free;
   inherited;
@@ -334,6 +341,15 @@ begin
 
   // sort the groups list
   groups.Sort(CompareRecordGroups);
+end;
+
+procedure FreePlugins;
+var
+  i: Integer;
+begin
+  for i := 0 to Pred(PluginsList.Count) do
+    TPlugin(PluginsList[i]).Destroy;
+  PluginsList.Clear;
 end;
 
 end.

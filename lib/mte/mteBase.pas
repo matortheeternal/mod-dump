@@ -99,6 +99,8 @@ begin
   description.Free;
   masters.Free;
   requiredBy.Free;
+  _File._Release;
+  _File := nil;
 end;
 
 procedure TBasePlugin.GetData(var lst: TList);

@@ -450,6 +450,7 @@ begin
     wbContainerHandler._AddRef;
 
     // build and print load order
+    AddMessage('== Building Load Order ==');
     BuildLoadOrder(filePath, slLoadOrder, true);
     wbFileForceClosed;
     PrintLoadOrder(slLoadOrder);
@@ -464,6 +465,8 @@ begin
     WriteDump(plugin);
     Result := JsonDump(plugin);
   finally
+    FreePlugins();
+    wbContainerHandler._Release;
     wbContainerHandler := nil;
     wbProgressCallback := nil;
     wbFileForceClosed;

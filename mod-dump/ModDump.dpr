@@ -3,6 +3,7 @@ program ModDump;
 {$APPTYPE CONSOLE}
 
 uses
+  fastmm4,
   SysUtils,
   mteHelpers,
   mdConfiguration in 'mdConfiguration.pas',
