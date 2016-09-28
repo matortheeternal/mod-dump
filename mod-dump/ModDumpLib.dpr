@@ -11,6 +11,7 @@ library ModDumpLib;
   using PChar or ShortString parameters. }
 
 uses
+  fastmm4,
   ShareMem,
   SysUtils,
   Classes,
