@@ -298,6 +298,7 @@ begin
 
   // write main attributes
   AddMessage('Filename: ' + plugin.filename);
+  AddMessage('IsESM: ' + BoolToStr(plugin._File.IsESM, true));
   AddMessage('Description'#13#10 + plugin.description.Text);
   AddMessage('Author: ' + plugin.author);
   AddMessage('Hash: ' + plugin.hash);
@@ -353,6 +354,7 @@ var
 begin
   obj := SO;
   obj.S['filename'] := plugin.filename;
+  obj.B['is_esm'] := plugin._File.IsESM;
   obj.S['description'] := plugin.description.Text;
   obj.S['author'] := plugin.author;
   obj.S['crc_hash'] := plugin.hash;
