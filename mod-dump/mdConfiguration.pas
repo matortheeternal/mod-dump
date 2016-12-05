@@ -36,6 +36,7 @@ type
     fallout4Path: string;
     fallout3Path: string;
     falloutNVPath: string;
+    skyrimSEPath: string;
     constructor Create; virtual;
     procedure UpdateForGame;
     function GameDataPath: String;
@@ -64,7 +65,7 @@ var
 
 const
   // GAME MODES
-  GameArray: array[0..4] of TGameMode = (
+  GameArray: array[0..5] of TGameMode = (
     ( longName: 'Fallout New Vegas'; gameName: 'FalloutNV'; gameMode: gmFNV;
       appName: 'FNV'; exeName: 'FalloutNV.exe'; appIDs: '22380,2028016';
       abbrName: 'fnv'; ),
@@ -79,7 +80,10 @@ const
       abbrName: 'sk'; ),
     ( longName: 'Fallout 4'; gameName: 'Fallout4'; gameMode: gmFO4;
       appName: 'FO4'; exeName: 'Fallout4.exe'; appIDs: '377160';
-      abbrName: 'fo4'; )
+      abbrName: 'fo4'; ),
+    ( longName: 'Skyrim Special Edition'; gameName: 'SkyrimSE'; gameMode: gmSSE;
+      appName: 'SSE'; exeName: 'SkyrimSE.exe'; appIDs: '489830';
+      abbrName: 'sse'; )
   );
 
 implementation
@@ -104,6 +108,7 @@ begin
   oblivionPath := GetGamePath(GameArray[2]) + 'data\';
   skyrimPath := GetGamePath(GameArray[3]) + 'data\';
   fallout4Path := GetGamePath(GameArray[4]) + 'data\';
+  skyrimSEPath := GetGamePath(GameArray[5]) + 'data\';
 end;
 
 procedure TSettings.UpdateForGame;
@@ -141,6 +146,7 @@ begin
     gmFNV: Result := falloutNVPath;
     gmFO3: Result := fallout3Path;
     gmFO4: Result := fallout4Path;
+    gmSSE: Result := skyrimSEPath;
   end;
 end;
 
@@ -192,6 +198,7 @@ begin
 
   // load definitions
   case wbGameMode of
+    gmSSE: DefineTES5;
     gmFO4: DefineFO4;
     gmTES5: DefineTES5;
     gmFNV: DefineFNV;
