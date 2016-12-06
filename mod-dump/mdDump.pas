@@ -209,7 +209,7 @@ begin
     end;
 
     // load hardcoded dat
-    if i = 0 then try
+    if IsMainGameEsm(sFileName) then try
       aFile := wbFile(PathList.Values['ProgramPath'] + wbGameName + wbHardcodedDat, 0);
       aFile._AddRef;
     except
