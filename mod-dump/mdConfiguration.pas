@@ -210,10 +210,7 @@ end;
 
 function IsMainGameESM(sFileName: String): Boolean;
 begin
-  if wbGameMode = gmSSE then
-    Result := sFileName = 'Skyrim.esm'
-  else
-    Result := sFileName = (wbGameName + 'esm');
+  Result := sFileName = (wbGameName + 'esm');
 end;
 
 { Gets the path of a game from registry key or app path }

@@ -210,11 +210,12 @@ begin
 
     // load hardcoded dat
     if IsMainGameEsm(sFileName) then try
-      aFile := wbFile(PathList.Values['ProgramPath'] + wbGameName + wbHardcodedDat, 0);
+      sFileName := ChangeFileExt(sFileName, wbHardcodedDat);
+      aFile := wbFile(PathList.Values['ProgramPath'] + sFileName, 0);
       aFile._AddRef;
     except
       on x: Exception do begin
-        AddMessage('Exception loading ' + wbGameName + wbHardcodedDat);
+        AddMessage('Exception loading ' + sFileName);
         raise x;
       end;
     end;
