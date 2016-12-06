@@ -52,6 +52,7 @@ type
 
   procedure SetGame(id: integer);
   function GetGamePath(mode: TGameMode): string;
+  function IsMainGameESM(sFileName: String): Boolean;
   function SetGameAbbr(abbrName: string): boolean;
   function SetGameParam(param: string): boolean;
   procedure LoadSettings;
@@ -205,6 +206,14 @@ begin
     gmTES4: DefineTES4;
     gmFO3: DefineFO3;
   end;
+end;
+
+function IsMainGameESM(sFileName: String): Boolean;
+begin
+  if wbGameMode = gmSSE then
+    Result := sFileName = 'Skyrim.esm'
+  else
+    Result := sFileName = (wbGameName + 'esm');
 end;
 
 { Gets the path of a game from registry key or app path }
