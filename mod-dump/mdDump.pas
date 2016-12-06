@@ -110,7 +110,7 @@ begin
   end;
 
   // load the file and recurse through its masters
-  aFile := wbFile(filePath, -1, '', True, False);
+  aFile := wbFile(filePath, -1, '', False, True);
   slMasters := TStringList.Create;
   try
     GetMasters(aFile, slMasters);
