@@ -218,19 +218,22 @@ const
     'Uninstall\Steam App ';
 var
   i: Integer;
-  gameName: string;
+  gameName, longName: string;
   keys, appIDs: TStringList;
 begin
   Result := '';
 
   // initialize variables
   gameName := mode.gameName;
+  longName := mode.longName;
   keys := TStringList.Create;
   appIDs := TStringList.Create;
   appIDs.CommaText := mode.appIDs;
 
   // add keys to check
   keys.Add(sBethRegKey + gameName + '\Installed Path');
+  keys.Add(sBethRegKey64 + gameName + '\Installed Path');
+  keys.Add(sBethRegKey + longName + '\Installed Path');
   keys.Add(sBethRegKey64 + gameName + '\Installed Path');
   for i := 0 to Pred(appIDs.Count) do begin
     keys.Add(sSteamRegKey + appIDs[i] + '\InstallLocation');
