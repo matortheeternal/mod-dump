@@ -5,6 +5,7 @@ program ModDump;
 uses
   fastmm4,
   SysUtils,
+  Classes,
   mteHelpers,
   mdConfiguration in 'mdConfiguration.pas',
   mdDump in 'mdDump.pas',
@@ -21,7 +22,7 @@ const
 
 var
   TargetFile, TargetGame, again: string;
-  bIsPlugin, bIsText, bDumpGroups: boolean;
+  bIsPlugin, bIsText, bDumpGroups, bDumpMasters: boolean;
 
 { HELPER METHODS }
 
@@ -70,6 +71,12 @@ begin
   AddMessage('Target File: ' + TargetFile);
   if not FindPlugin(TargetFile) then
     raise Exception.Create('Target file not found');
+
+  // dump masters
+  if ParamStr(1) = '-dumpMasters' then begin
+    bDumpMasters := true;
+    exit;
+  end;
 end;
 
 function FindFile(var filePath: String): boolean;
@@ -95,6 +102,7 @@ procedure ReadInput;
 var
   bGameAssigned, bSuccess: boolean;
 begin
+  bDumpMasters := False;
   bGameAssigned := ProgramStatus.bGameAssigned;
   while not bGameAssigned do begin
     // get game abbr
@@ -129,6 +137,12 @@ begin
       continue;
     end;
 
+    // list if user asked for it
+    if TargetFile = 'masters' then begin
+      bDumpMasters := not bDumpMasters;
+      continue;
+    end;
+
     // check if the plugin exists
     if not FindFile(TargetFile) then
       AddMessage(Format('Plugin not found: "%s"', [settings.GameDataPath + TargetFile]))
@@ -154,6 +168,19 @@ begin
     raise Exception.Create('Target file does not match *.esp, *.esm, or *.txt');
 end;
 
+procedure DumpMasters;
+var
+  sl: TStringList;
+begin
+  sl := TStringList.Create;
+  try
+    GetPluginMasters(TargetFile, sl);
+    AddMessage(sl.Text);
+  finally
+    sl.Free;
+  end;
+end;
+
 { MAIN PROGRAM EXECUTION }
 
 begin
@@ -171,7 +198,9 @@ begin
       DetermineMode;
 
       // do the dump
-      if bDumpGroups then
+      if bDumpMasters then
+        DumpMasters
+      else if bDumpGroups then
         DumpGroups
       else if bIsPlugin then
         DumpPlugin(TargetFile)
