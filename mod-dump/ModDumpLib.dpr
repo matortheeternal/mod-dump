@@ -101,6 +101,24 @@ begin
   Result := true;
 end;
 
+function DumpMasters(FilePath: PAnsiChar; str: PAnsiChar; len: Integer): WordBool; stdcall;
+var
+  sl: TStringList;
+begin
+  Result := false;
+  sl := TStringList.Create;
+  try
+    AddMessage('DumpMasters: ' + String(FilePath));
+    GetPluginMasters(FilePath, sl);
+    sl.Delimiter := ';';
+    sl.StrictDelimiter := true;
+    StrLCopy(str, PAnsiChar(AnsiString(sl.DelimitedText)), len);
+    Result := true;
+  finally
+    sl.Free;
+  end;
+end;
+
 procedure StartModDump; stdcall;
 begin
   AddMessage('ModDump v' + ProgramStatus.ProgramVersion);
@@ -116,7 +134,8 @@ exports
   SetGameMode,
   Prepare,
   Dump,
-  GetDumpResult;
+  GetDumpResult,
+  DumpMasters;
 
 begin
   IsMultiThread := True;
