@@ -101,7 +101,7 @@ begin
   language := 'English';
   bPrintHashes := false;
   bSaveToDisk := false;
-  bAllowDummies := false;
+  bAllowDummies := true;
   bVerboseLog := false;
   // game paths
   falloutNVPath := GetGamePath(GameArray[0]) + 'data\';
