@@ -3,6 +3,7 @@ unit mdDump;
 interface
 
 uses
+  Classes,
   // third party libraries
   superobject;
 
@@ -11,11 +12,12 @@ uses
   procedure DumpGroups;
   function DumpPlugin(filePath: string): ISuperObject;
   function DumpPluginsList(filePath: string): ISuperObject;
+  procedure GetPluginMasters(filePath: string; var sl: TStringList);
 
 implementation
 
 uses
-  SysUtils, Classes, Windows,
+  SysUtils, Windows,
   // mte units
   mteHelpers, mteBase,
   // md units
@@ -513,6 +515,23 @@ begin
     end;
   finally
     sl.Free;
+  end;
+end;
+
+procedure GetPluginMasters(filePath: string; var sl: TStringList);
+var
+  aFile: IwbFile;
+begin
+  try
+    try
+      aFile := wbFile(filePath, -1, '', False, True);
+      GetMasters(aFile, sl);
+    except
+      on x: Exception do
+        AddMessage(x.Message);
+    end;
+  finally
+    wbFileForceClosed;
   end;
 end;
 
