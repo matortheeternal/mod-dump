@@ -108,7 +108,6 @@ begin
   Result := false;
   sl := TStringList.Create;
   try
-    AddMessage('DumpMasters: ' + String(FilePath));
     GetPluginMasters(FilePath, sl);
     sl.Delimiter := ';';
     sl.StrictDelimiter := true;
