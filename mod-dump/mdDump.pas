@@ -302,6 +302,7 @@ begin
   // write main attributes
   AddMessage('Filename: ' + plugin.filename);
   AddMessage('IsESM: ' + BoolToStr(plugin._File.IsESM, true));
+  AddMessage('UsedDummyPlugins: ' + BoolToStr(ProgramStatus.bUsedDummyPlugins, true));
   AddMessage('Description'#13#10 + plugin.description.Text);
   AddMessage('Author: ' + plugin.author);
   AddMessage('Hash: ' + plugin.hash);
@@ -349,8 +350,8 @@ end;
 function JsonDump(plugin: TPlugin): ISuperObject;
 var
   obj, childObj: ISuperObject;
-  path: String;
-  i, j: Integer;
+  path, hash: String;
+  i: Integer;
   group: TRecordGroup;
   error: TRecordError;
   sl: TStringList;
@@ -358,6 +359,7 @@ begin
   obj := SO;
   obj.S['filename'] := plugin.filename;
   obj.B['is_esm'] := plugin._File.IsESM;
+  obj.B['used_dummy_plugins'] := ProgramStatus.bUsedDummyPlugins;
   obj.S['description'] := plugin.description.Text;
   obj.S['author'] := plugin.author;
   obj.S['crc_hash'] := plugin.hash;
@@ -371,18 +373,10 @@ begin
   for i := 0 to Pred(plugin.masters.Count) do begin
     childObj := SO;
     childObj.S['filename'] := plugin.masters[i];
-    childObj.S['crc_hash'] := PluginByFilename(plugin.masters[i]).hash;
+    hash := PluginByFilename(plugin.masters[i]).hash;
+    if (hash = dummyPluginHash) then hash := '00000000';
+    childObj.S['crc_hash'] := hash;
     obj.A['master_plugins'].O[i] := childObj;
-  end;
-
-  // dump dummy masters
-  obj.O['dummy_master_filenames'] := SA([]);
-  j := 0;
-  for i := 0 to Pred(plugin.masters.Count) do begin
-    if PluginByFilename(plugin.masters[i]).hash = dummyPluginHash then begin
-      obj.A['dummy_master_filenames'].S[j] := plugin.masters[i];
-      Inc(j);
-    end;
   end;
 
   // dump record groups
@@ -446,6 +440,9 @@ var
 begin
   slLoadOrder := TStringList.Create;
   try
+    // reset used dummy plugins boolean
+    ProgramStatus.bUsedDummyPlugins := false;
+
     // set progress callback if using verbose logging
     if settings.bVerboseLog then
       wbProgressCallback := AddMessage;
