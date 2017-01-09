@@ -30,6 +30,7 @@ type
       error: string); overload;
     constructor Create(rec: IwbMainRecord; element: IwbElement;
       error: string); overload;
+    function IsDummyError: boolean;
   end;
   TRecordGroup = class
   public
@@ -97,7 +98,8 @@ begin
     Result := aElement.ContainingMainRecord;
     if Assigned(Result) then begin
       errorObj := TRecordError.Create(Result, aElement, error);
-      errors.Add(errorObj);
+      if not errorObj.IsDummyError then
+        errors.Add(errorObj);
     end;
   end;
 
@@ -228,6 +230,11 @@ begin
   ParseError(error, &type, data);
 end;
 
+function TRecordError.IsDummyError: boolean;
+begin
+  Result := ProgramStatus.bUsedDummyPlugins and (&type.id in [erURR, erUER]);
+end;
+
 { TRecordGroup }
 constructor TRecordGroup.Create(signature: TwbSignature);
 begin
@@ -276,10 +283,6 @@ end;
 
 procedure TPlugin.GetErrors;
 begin
-  // don't get errors if we've loaded an empty plugin
-  if ProgramStatus.bUsedDummyPlugins then
-    exit;
-
   // dump errors
   DumpErrors(_File as IwbElement, errors);
   DumpSubrecordErrors(_File, errors);
