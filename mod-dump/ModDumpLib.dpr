@@ -105,7 +105,6 @@ function DumpMasters(FilePath: PAnsiChar; str: PAnsiChar; len: Integer): WordBoo
 var
   sl: TStringList;
 begin
-  Result := false;
   sl := TStringList.Create;
   try
     GetPluginMasters(FilePath, sl);
