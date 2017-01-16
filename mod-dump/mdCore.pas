@@ -275,7 +275,7 @@ begin
   GetData(PluginsList);
 
   // get extended data
-  if bExtData {and (hash <> emptyPluginHash)} then begin
+  if bExtData then begin
     GetErrors;
     GetRecords;
   end;

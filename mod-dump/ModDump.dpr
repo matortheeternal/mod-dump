@@ -108,7 +108,7 @@ begin
     // get game abbr
     AddMessage(' ');
     AddMessage('Enter the game mode you want to use.');
-    AddMessage('Options: sk, ob, fo4, fnv, fo3 (Skyrim, Oblivion, Fallout 4, Fallout New Vegas, and Fallout 3)');
+    AddMessage('Options: sse, sk, ob, fo4, fnv, fo3 (SkyrimSE, Skyrim, Oblivion, Fallout 4, Fallout New Vegas, and Fallout 3)');
     AddMessage(' ');
     ReadLn(TargetGame);
 
