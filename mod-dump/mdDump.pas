@@ -105,8 +105,10 @@ begin
   filePath := filename;
   // create empty plugin if plugin doesn't exist
   if not FindPlugin(filePath) then begin
-    if settings.bAllowDummies then
-      CreateDummyPlugin(filePath)
+    if settings.bAllowDummies then begin
+      filePath := wbDataPath + ExtractFileName(filePath);
+      CreateDummyPlugin(filePath);
+    end
     else
       raise Exception.Create('Missing master plugin '+filename);
   end;
@@ -453,11 +455,13 @@ begin
 
     // build and print load order
     AddMessage('== Building Load Order ==');
+    wbRequireLoadOrder := false;
     BuildLoadOrder(filePath, slLoadOrder, true);
     wbFileForceClosed;
     PrintLoadOrder(slLoadOrder);
 
     // load plugins and resources
+    wbRequireLoadOrder := true;
     sFileName := ExtractFilename(filePath);
     LoadResources(slLoadOrder);
     LoadPlugins(sFileName, slLoadOrder);
