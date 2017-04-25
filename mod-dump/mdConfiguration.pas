@@ -27,7 +27,6 @@ type
     dumpPath: string;
     language: string;
     bPrintHashes: boolean;
-    bSaveToDisk: boolean;
     bAllowDummies: boolean;
     bVerboseLog: boolean;
     [IniSection('Games')]
@@ -100,7 +99,6 @@ begin
   dumpPath := '{{gameName}}\';
   language := 'English';
   bPrintHashes := false;
-  bSaveToDisk := false;
   bAllowDummies := true;
   bVerboseLog := false;
   // game paths

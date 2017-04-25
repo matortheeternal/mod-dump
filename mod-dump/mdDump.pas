@@ -349,14 +349,30 @@ begin
     AddMessage(' No errors');
 end;
 
+procedure SaveJsonToDisk(plugin: TPlugin; obj: ISuperObject);
+var
+  path: string;
+  sl: TStringList;
+begin
+  sl := TStringList.Create;
+  try
+    sl.Text := obj.AsJSon;
+    path := settings.dumpPath + Format('%s-%s.json', [plugin.filename, plugin.hash]);
+    AddMessage(' ');
+    AddMessage('Saving JSON dump to: ' + path);
+    sl.SaveToFile(path);
+  finally
+    sl.Free;
+  end;
+end;
+
 function JsonDump(plugin: TPlugin): ISuperObject;
 var
   obj, childObj: ISuperObject;
-  path, hash: String;
+  hash: String;
   i: Integer;
   group: TRecordGroup;
   error: TRecordError;
-  sl: TStringList;
 begin
   obj := SO;
   obj.S['filename'] := plugin.filename;
@@ -418,17 +434,7 @@ begin
   end;
 
   // save to disk
-  if settings.bSaveToDisk then begin
-    sl := TStringList.Create;
-    try
-      sl.Text := obj.AsJSon;
-      path := settings.dumpPath + plugin.filename + '.json';
-      AddMessage(#13#10'Saving JSON dump to: ' + path);
-      sl.SaveToFile(path);
-    finally
-      sl.Free;
-    end;
-  end;
+  SaveJsonToDisk(plugin, obj);
 
   // result is JSON object
   Result := obj;
