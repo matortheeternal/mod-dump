@@ -82,9 +82,9 @@
 						<VersionInfo Name="IncludeVerInfo">True</VersionInfo>
 						<VersionInfo Name="AutoIncBuild">True</VersionInfo>
 						<VersionInfo Name="MajorVer">1</VersionInfo>
-						<VersionInfo Name="MinorVer">4</VersionInfo>
+						<VersionInfo Name="MinorVer">5</VersionInfo>
 						<VersionInfo Name="Release">0</VersionInfo>
-						<VersionInfo Name="Build">5</VersionInfo>
+						<VersionInfo Name="Build">1</VersionInfo>
 						<VersionInfo Name="Debug">False</VersionInfo>
 						<VersionInfo Name="PreRelease">False</VersionInfo>
 						<VersionInfo Name="Special">False</VersionInfo>
@@ -96,13 +96,13 @@
 					<VersionInfoKeys>
 						<VersionInfoKeys Name="CompanyName"/>
 						<VersionInfoKeys Name="FileDescription"/>
-						<VersionInfoKeys Name="FileVersion">1.4.0.5</VersionInfoKeys>
+						<VersionInfoKeys Name="FileVersion">1.5.0.1</VersionInfoKeys>
 						<VersionInfoKeys Name="InternalName"/>
 						<VersionInfoKeys Name="LegalCopyright"/>
 						<VersionInfoKeys Name="LegalTrademarks"/>
 						<VersionInfoKeys Name="OriginalFilename"/>
 						<VersionInfoKeys Name="ProductName"/>
-						<VersionInfoKeys Name="ProductVersion">1.4</VersionInfoKeys>
+						<VersionInfoKeys Name="ProductVersion">1.5</VersionInfoKeys>
 						<VersionInfoKeys Name="Comments"/>
 					</VersionInfoKeys>
 					<Source>
