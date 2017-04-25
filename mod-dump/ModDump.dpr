@@ -3,7 +3,6 @@ program ModDump;
 {$APPTYPE CONSOLE}
 
 uses
-  fastmm4,
   SysUtils,
   Classes,
   mteHelpers,
@@ -22,7 +21,7 @@ const
 
 var
   TargetFile, TargetGame, again: string;
-  bIsPlugin, bIsText, bDumpGroups, bDumpMasters: boolean;
+  bIsPlugin, bIsText, bDumpGroups, bDumpMasters, bManualMode: boolean;
 
 { HELPER METHODS }
 
@@ -73,7 +72,7 @@ begin
     raise Exception.Create('Target file not found');
 
   // dump masters
-  if ParamStr(1) = '-dumpMasters' then begin
+  if ParamStr(3) = '-dumpMasters' then begin
     bDumpMasters := true;
     exit;
   end;
@@ -173,9 +172,11 @@ var
   sl: TStringList;
 begin
   sl := TStringList.Create;
+  sl.Delimiter := ';';
+  sl.StrictDelimiter := true;
   try
     GetPluginMasters(TargetFile, sl);
-    AddMessage(sl.Text);
+    AddMessage(Trim(sl.DelimitedText));
   finally
     sl.Free;
   end;
@@ -183,34 +184,45 @@ end;
 
 { MAIN PROGRAM EXECUTION }
 
+procedure PerformDump;
+begin
+  // do the dump
+  if bDumpMasters then
+    DumpMasters
+  else if bDumpGroups then
+    DumpGroups
+  else if bIsPlugin then
+    DumpPlugin(TargetFile)
+  else if bIsText then
+    DumpPluginsList(TargetFile);
+end;
+
+procedure ManualDump;
+begin
+  repeat
+    ReadInput;
+    DetermineMode;
+    PerformDump;
+    AddMessage('Dump another plugin? y/n ');
+    ReadLn(again);
+  until (not SameText(again, 'y'));
+end;
+
+procedure AutoDump;
+begin
+  LoadParams;
+  DetermineMode;
+  PerformDump;
+end;
+
 begin
   try
     Welcome;
-
-    repeat
-      // load params or read input
-      if ParamCount > 1 then
-        LoadParams
-      else
-        ReadInput;
-
-      // determine mode
-      DetermineMode;
-
-      // do the dump
-      if bDumpMasters then
-        DumpMasters
-      else if bDumpGroups then
-        DumpGroups
-      else if bIsPlugin then
-        DumpPlugin(TargetFile)
-      else if bIsText then
-        DumpPluginsList(TargetFile);
-
-      // repeat if user said yes
-      AddMessage('Dump another plugin? y/n ');
-      ReadLn(again);
-    until (not SameText(again, 'y'));
+    bManualMode := ParamCount <= 1;
+    if bManualMode then
+      ManualDump
+    else
+      AutoDump;
   except
     on E: Exception do
       AddMessage(E.ClassName + ': ' + E.Message);
