@@ -448,34 +448,39 @@ var
 begin
   slLoadOrder := TStringList.Create;
   try
-    // reset used dummy plugins boolean
-    ProgramStatus.bUsedDummyPlugins := false;
+    try
+      // reset used dummy plugins boolean
+      ProgramStatus.bUsedDummyPlugins := false;
 
-    // set progress callback if using verbose logging
-    if settings.bVerboseLog then
-      wbProgressCallback := AddMessage;
+      // set progress callback if using verbose logging
+      if settings.bVerboseLog then
+        wbProgressCallback := AddMessage;
 
-    // create new container handler
-    wbContainerHandler := wbCreateContainerHandler;
-    wbContainerHandler._AddRef;
+      // create new container handler
+      wbContainerHandler := wbCreateContainerHandler;
+      wbContainerHandler._AddRef;
 
-    // build and print load order
-    AddMessage('== Building Load Order ==');
-    wbRequireLoadOrder := false;
-    BuildLoadOrder(filePath, slLoadOrder, true);
-    wbFileForceClosed;
-    PrintLoadOrder(slLoadOrder);
+      // build and print load order
+      AddMessage('== Building Load Order ==');
+      wbRequireLoadOrder := false;
+      BuildLoadOrder(filePath, slLoadOrder, true);
+      wbFileForceClosed;
+      PrintLoadOrder(slLoadOrder);
 
-    // load plugins and resources
-    wbRequireLoadOrder := true;
-    sFileName := ExtractFilename(filePath);
-    LoadResources(slLoadOrder);
-    LoadPlugins(sFileName, slLoadOrder);
+      // load plugins and resources
+      wbRequireLoadOrder := true;
+      sFileName := ExtractFilename(filePath);
+      LoadResources(slLoadOrder);
+      LoadPlugins(sFileName, slLoadOrder);
 
-    // dump info on our plugin
-    plugin := PluginByFilename(sFileName);
-    WriteDump(plugin);
-    Result := JsonDump(plugin);
+      // dump info on our plugin
+      plugin := PluginByFilename(sFileName);
+      WriteDump(plugin);
+      Result := JsonDump(plugin);
+    except
+      on x: Exception do
+        ErrorMessage('Exception dumping plugin: ' + x.Message);
+    end;
   finally
     FreePlugins();
     wbContainerHandler._Release;
@@ -535,7 +540,7 @@ begin
       GetMasters(aFile, sl);
     except
       on x: Exception do
-        AddMessage(x.Message);
+        ErrorMessage('Exception dumping plugin masters: ' + x.Message);
     end;
   finally
     wbFileForceClosed;
