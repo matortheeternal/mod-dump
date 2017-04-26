@@ -176,7 +176,10 @@ begin
   sl.StrictDelimiter := true;
   try
     GetPluginMasters(TargetFile, sl);
-    AddMessage(Trim(sl.DelimitedText));
+    if sl.Count = 0 then
+      AddMessage('NO MASTERS')
+    else
+      AddMessage(Trim(sl.DelimitedText));
   finally
     sl.Free;
   end;
