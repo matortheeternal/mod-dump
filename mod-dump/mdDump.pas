@@ -143,7 +143,7 @@ begin
   for i := 0 to Pred(PluginsList.Count) do begin
     plugin := TPlugin(PluginsList[i]);
     if (plugin.hash = dummyPluginHash) then begin
-      sFilePath := PathList.Values['ProgramPath'] + plugin.filename;
+      sFilePath := wbDataPath + plugin.filename;
       AddMessage('Deleting ' + sFilePath);
       DeleteFile(PChar(sFilePath));
     end;
