@@ -27,7 +27,6 @@ type
     dumpPath: string;
     language: string;
     bPrintHashes: boolean;
-    bAllowDummies: boolean;
     bVerboseLog: boolean;
     [IniSection('Games')]
     skyrimPath: string;
@@ -99,7 +98,6 @@ begin
   dumpPath := '{{gameName}}\';
   language := 'English';
   bPrintHashes := false;
-  bAllowDummies := true;
   bVerboseLog := false;
   // game paths
   falloutNVPath := GetGamePath(GameArray[0]) + 'data\';

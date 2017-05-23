@@ -35,7 +35,7 @@ begin
   if not FileExists(settings.dummyPluginPath) then
     raise Exception.Create(Format('Empty plugin not found at "%s"',
       [settings.dummyPluginPath]));
-  AddMessage('Creating empty plugin ' + path);
+  AddMessage('Creating dummy plugin at: ' + path);
   CopyFile(PChar(settings.dummyPluginPath), PChar(path), true);
 end;
 
@@ -105,12 +105,8 @@ begin
   filePath := filename;
   // create empty plugin if plugin doesn't exist
   if not FindPlugin(filePath) then begin
-    if settings.bAllowDummies then begin
-      filePath := wbDataPath + ExtractFileName(filePath);
-      CreateDummyPlugin(filePath);
-    end
-    else
-      raise Exception.Create('Missing master plugin '+filename);
+    filePath := wbDataPath + ExtractFileName(filePath);
+    CreateDummyPlugin(filePath);
   end;
 
   // load the file and recurse through its masters
