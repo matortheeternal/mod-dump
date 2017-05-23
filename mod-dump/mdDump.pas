@@ -133,6 +133,7 @@ var
   plugin: TPlugin;
   sFilePath: String;
 begin
+  if not Assigned(PluginsList) then exit;
   AddMessage(' ');
   AddMessage('== DELETING DUMMIES ==');
 
@@ -434,9 +435,6 @@ begin
     obj.A['plugin_errors'].Add(childObj);
   end;
 
-  // save to disk
-  SaveJsonToDisk(plugin, obj);
-
   // result is JSON object
   Result := obj;
 end;
@@ -448,6 +446,7 @@ var
   plugin: TPlugin;
 begin
   slLoadOrder := TStringList.Create;
+  plugin := nil;
   try
     try
       // reset used dummy plugins boolean
@@ -487,12 +486,11 @@ begin
     wbContainerHandler := nil;
     wbProgressCallback := nil;
     wbFileForceClosed;
-    if ProgramStatus.bUsedDummyPlugins then try
+    if ProgramStatus.bUsedDummyPlugins then
       DeleteDummyPlugins;
-    except
-      on x: Exception do
-        AddMessage('Exception deleting dummy plugins ' + x.Message);
-    end;
+    // save to disk
+    if Assigned(plugin) and Assigned(Result) then
+      SaveJsonToDisk(plugin, Result);
     FreePlugins();
     slLoadOrder.Free;
   end;
