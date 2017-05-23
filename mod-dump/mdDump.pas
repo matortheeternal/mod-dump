@@ -138,10 +138,15 @@ begin
 
   for i := 0 to Pred(PluginsList.Count) do begin
     plugin := TPlugin(PluginsList[i]);
-    if (plugin.hash = dummyPluginHash) then begin
+    if (plugin.hash = dummyPluginHash) then try
       sFilePath := wbDataPath + plugin.filename;
-      AddMessage('Deleting ' + sFilePath);
-      DeleteFile(PChar(sFilePath));
+      if FileExists(sfilePath) then begin
+        AddMessage('Deleting ' + sFilePath);
+        DeleteFile(PChar(sFilePath));
+      end;
+    except
+      on x: Exception do
+        AddMessage('Error deleting dummy plugin, ' + x.Message);
     end;
   end;
 end;
@@ -478,13 +483,17 @@ begin
         ErrorMessage('Exception dumping plugin: ' + x.Message);
     end;
   finally
-    FreePlugins();
     wbContainerHandler._Release;
     wbContainerHandler := nil;
     wbProgressCallback := nil;
     wbFileForceClosed;
-    if ProgramStatus.bUsedDummyPlugins then
+    if ProgramStatus.bUsedDummyPlugins then try
       DeleteDummyPlugins;
+    except
+      on x: Exception do
+        AddMessage('Exception deleting dummy plugins ' + x.Message);
+    end;
+    FreePlugins();
     slLoadOrder.Free;
   end;
 end;
